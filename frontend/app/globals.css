@@ -1,0 +1,594 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    /* Original variables */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Enhanced variables */
+    --background-rgb: 255, 255, 255;
+    --foreground-rgb: 10, 10, 10;
+    --primary-rgb: 23, 23, 23;
+    --accent-rgb: 245, 245, 245;
+    --secondary-rgb: 245, 245, 245;
+    
+    /* Enhanced monochrome palette */
+    --mono-50: 0 0% 98%;
+    --mono-100: 0 0% 95%;
+    --mono-200: 0 0% 90%;
+    --mono-300: 0 0% 83%;
+    --mono-400: 0 0% 64%;
+    --mono-500: 0 0% 45%;
+    --mono-600: 0 0% 32%;
+    --mono-700: 0 0% 25%;
+    --mono-800: 0 0% 15%;
+    --mono-900: 0 0% 9%;
+    --mono-950: 0 0% 4%;
+    
+    /* Enhanced shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 6px rgba(0, 0, 0, 0.02);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.04), 0 2px 10px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.05), 0 5px 25px rgba(0, 0, 0, 0.04);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.07), 0 10px 10px rgba(0, 0, 0, 0.04);
+    
+    /* Enhanced blurs */
+    --blur-sm: 4px;
+    --blur-md: 8px;
+    --blur-lg: 16px;
+    
+    /* Enhanced gradients */
+    --gradient-primary: linear-gradient(to right, hsl(var(--primary)), hsl(calc(var(--primary) + 10), 80%, 60%));
+    --gradient-accent: linear-gradient(to right, hsl(var(--accent)), hsl(calc(var(--accent) + 20), 90%, 65%));
+    --gradient-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    
+    /* Mesh gradient backgrounds */
+    --mesh-gradient: radial-gradient(at 40% 20%, hsla(var(--primary) / 0.1) 0px, transparent 50%), 
+                     radial-gradient(at 80% 0%, hsla(var(--accent) / 0.1) 0px, transparent 50%), 
+                     radial-gradient(at 0% 50%, hsla(var(--secondary) / 0.1) 0px, transparent 50%);
+                     
+    /* Enhanced success, info, warning variables */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+    --info: 211 100% 50%;
+    --info-foreground: 0 0% 98%;
+    --warning: 45 100% 51%;
+    --warning-foreground: 0 0% 9%;
+  }
+  
+  .dark {
+    /* Original dark variables */
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Enhanced dark variables */
+    --background-rgb: 10, 10, 10;
+    --foreground-rgb: 240, 240, 240;
+    --primary-rgb: 240, 240, 240;
+    --accent-rgb: 30, 30, 30;
+    --secondary-rgb: 25, 25, 25;
+    
+    /* Enhanced monochrome palette */
+    --mono-50: 0 0% 98%;
+    --mono-100: 0 0% 92%;
+    --mono-200: 0 0% 85%;
+    --mono-300: 0 0% 78%;
+    --mono-400: 0 0% 60%;
+    --mono-500: 0 0% 45%;
+    --mono-600: 0 0% 32%;
+    --mono-700: 0 0% 25%;
+    --mono-800: 0 0% 15%;
+    --mono-900: 0 0% 9%;
+    --mono-950: 0 0% 4%;
+    
+    /* Enhanced dark shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 6px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25), 0 2px 10px rgba(0, 0, 0, 0.22);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.35), 0 5px 25px rgba(0, 0, 0, 0.25);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.4), 0 10px 10px rgba(0, 0, 0, 0.3);
+    
+    /* Enhanced dark mesh gradient */
+    --mesh-gradient: radial-gradient(at 40% 20%, hsla(var(--primary) / 0.2) 0px, transparent 50%), 
+                     radial-gradient(at 80% 0%, hsla(var(--accent) / 0.2) 0px, transparent 50%), 
+                     radial-gradient(at 0% 50%, hsla(var(--secondary) / 0.2) 0px, transparent 50%);
+  }
+  
+  /* Enhanced sunset theme */
+  .sunset {
+    --background: 0 15% 10%;
+    --foreground: 40 100% 97%;
+    --card: 0 15% 12%;
+    --card-foreground: 40 100% 97%;
+    --popover: 0 15% 12%;
+    --popover-foreground: 40 100% 97%;
+    --primary: 20 80% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 40 90% 60%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 10 20% 20%;
+    --muted-foreground: 30 20% 70%;
+    --accent: 320 80% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 10 30% 25%;
+    --input: 10 30% 25%;
+    --ring: 20 80% 60%;
+    --chart-1: 20 80% 60%;
+    --chart-2: 40 90% 60%;
+    --chart-3: 60 85% 55%;
+    --chart-4: 320 80% 60%;
+    --chart-5: 280 75% 60%;
+    --sidebar-background: 0 20% 8%;
+    --sidebar-foreground: 40 90% 90%;
+    --sidebar-primary: 20 80% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 10 20% 15%;
+    --sidebar-accent-foreground: 40 90% 90%;
+    --sidebar-border: 10 30% 20%;
+    --sidebar-ring: 20 80% 60%;
+    
+    /* Enhanced sunset variables */
+    --background-rgb: 26, 15, 11;
+    --foreground-rgb: 255, 245, 230;
+    --primary-rgb: 255, 128, 77;
+    --secondary-rgb: 255, 180, 70;
+    --accent-rgb: 255, 80, 120;
+    
+    /* Enhanced sunset mesh gradient */
+    --mesh-gradient: radial-gradient(at 40% 20%, hsla(20, 80%, 60%, 0.3) 0px, transparent 50%), 
+                     radial-gradient(at 80% 0%, hsla(40, 90%, 60%, 0.3) 0px, transparent 50%), 
+                     radial-gradient(at 0% 50%, hsla(320, 80%, 60%, 0.2) 0px, transparent 50%);
+  }
+  
+  /* Enhanced purple theme */
+  .purple {
+    --background: 270 50% 8%;
+    --foreground: 270 20% 95%;
+    --card: 270 50% 10%;
+    --card-foreground: 270 20% 95%;
+    --popover: 270 50% 10%;
+    --popover-foreground: 270 20% 95%;
+    --primary: 270 80% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 290 70% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 270 30% 15%;
+    --muted-foreground: 270 10% 70%;
+    --accent: 320 80% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 270 30% 20%;
+    --input: 270 30% 20%;
+    --ring: 270 80% 60%;
+    --chart-1: 270 80% 60%;
+    --chart-2: 290 70% 50%;
+    --chart-3: 320 80% 60%;
+    --chart-4: 250 70% 60%;
+    --chart-5: 225 75% 65%;
+    --sidebar-background: 270 60% 6%;
+    --sidebar-foreground: 270 15% 90%;
+    --sidebar-primary: 270 80% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 270 30% 12%;
+    --sidebar-accent-foreground: 270 15% 90%;
+    --sidebar-border: 270 30% 15%;
+    --sidebar-ring: 270 80% 60%;
+    
+    /* Enhanced purple variables */
+    --background-rgb: 20, 0, 40;
+    --foreground-rgb: 240, 235, 255;
+    --primary-rgb: 170, 85, 255;
+    --secondary-rgb: 140, 50, 220;
+    --accent-rgb: 255, 100, 180;
+    
+    /* Enhanced purple mesh gradient */
+    --mesh-gradient: radial-gradient(at 40% 20%, hsla(270, 80%, 60%, 0.3) 0px, transparent 50%), 
+                     radial-gradient(at 80% 0%, hsla(290, 70%, 50%, 0.3) 0px, transparent 50%), 
+                     radial-gradient(at 0% 50%, hsla(320, 80%, 60%, 0.2) 0px, transparent 50%);
+  }
+  
+  /* Enhanced ocean theme */
+  .ocean {
+    --background: 210 50% 6%;
+    --foreground: 210 20% 98%;
+    --card: 210 50% 8%;
+    --card-foreground: 210 20% 98%;
+    --popover: 210 50% 8%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 70% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 30% 15%;
+    --muted-foreground: 210 10% 70%;
+    --accent: 250 60% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 210 30% 18%;
+    --input: 210 30% 18%;
+    --ring: 199 89% 48%;
+    --chart-1: 199 89% 48%;
+    --chart-2: 220 70% 50%;
+    --chart-3: 250 60% 60%;
+    --chart-4: 180 70% 45%;
+    --chart-5: 160 80% 40%;
+    --sidebar-background: 210 60% 5%;
+    --sidebar-foreground: 210 15% 90%;
+    --sidebar-primary: 199 89% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 30% 12%;
+    --sidebar-accent-foreground: 210 15% 90%;
+    --sidebar-border: 210 30% 15%;
+    --sidebar-ring: 199 89% 48%;
+    
+    /* Enhanced ocean variables */
+    --background-rgb: 8, 20, 35;
+    --foreground-rgb: 240, 248, 255;
+    --primary-rgb: 20, 150, 220;
+    --secondary-rgb: 45, 90, 200;
+    --accent-rgb: 100, 80, 240;
+    
+    /* Enhanced ocean mesh gradient */
+    --mesh-gradient: radial-gradient(at 40% 20%, hsla(199, 89%, 48%, 0.2) 0px, transparent 50%), 
+                     radial-gradient(at 80% 0%, hsla(220, 70%, 50%, 0.2) 0px, transparent 50%), 
+                     radial-gradient(at 0% 50%, hsla(180, 70%, 45%, 0.2) 0px, transparent 50%);
+  }
+  
+  /* New futuristic theme */
+  .futuristic {
+    --background: 225 40% 6%;
+    --foreground: 225 20% 98%;
+    --card: 225 40% 8%;
+    --card-foreground: 225 20% 98%;
+    --popover: 225 40% 8%;
+    --popover-foreground: 225 20% 98%;
+    --primary: 265 80% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 190 90% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 225 30% 15%;
+    --muted-foreground: 225 10% 70%;
+    --accent: 325 80% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 225 30% 18%;
+    --input: 225 30% 18%;
+    --ring: 265 80% 60%;
+    --chart-1: 265 80% 60%;
+    --chart-2: 190 90% 50%;
+    --chart-3: 325 80% 60%;
+    --chart-4: 230 70% 55%;
+    --chart-5: 160 80% 45%;
+    --sidebar-background: 225 50% 5%;
+    --sidebar-foreground: 225 15% 90%;
+    --sidebar-primary: 265 80% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 225 30% 12%;
+    --sidebar-accent-foreground: 225 15% 90%;
+    --sidebar-border: 225 30% 15%;
+    --sidebar-ring: 265 80% 60%;
+    
+    /* Enhanced futuristic variables */
+    --background-rgb: 10, 12, 25;
+    --foreground-rgb: 240, 245, 255;
+    --primary-rgb: 150, 80, 255;
+    --secondary-rgb: 10, 200, 255;
+    --accent-rgb: 255, 50, 150;
+    
+    /* Enhanced futuristic mesh gradient */
+    --mesh-gradient: radial-gradient(at 40% 20%, hsla(265, 80%, 60%, 0.2) 0px, transparent 50%), 
+                     radial-gradient(at 80% 0%, hsla(190, 90%, 50%, 0.2) 0px, transparent 50%), 
+                     radial-gradient(at 0% 50%, hsla(325, 80%, 60%, 0.2) 0px, transparent 50%);
+  }
+  
+  /* New nature theme */
+  .nature {
+    --background: 120 20% 6%;
+    --foreground: 120 10% 98%;
+    --card: 120 20% 8%;
+    --card-foreground: 120 10% 98%;
+    --popover: 120 20% 8%;
+    --popover-foreground: 120 10% 98%;
+    --primary: 140 60% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 80 60% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 120 20% 15%;
+    --muted-foreground: 120 10% 70%;
+    --accent: 30 70% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 120 20% 18%;
+    --input: 120 20% 18%;
+    --ring: 140 60% 40%;
+    --chart-1: 140 60% 40%;
+    --chart-2: 80 60% 50%;
+    --chart-3: 30 70% 55%;
+    --chart-4: 160 50% 45%;
+    --chart-5: 200 60% 50%;
+    --sidebar-background: 120 30% 5%;
+    --sidebar-foreground: 120 10% 90%;
+    --sidebar-primary: 140 60% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 120 20% 12%;
+    --sidebar-accent-foreground: 120 10% 90%;
+    --sidebar-border: 120 20% 15%;
+    --sidebar-ring: 140 60% 40%;
+    
+    /* Enhanced nature variables */
+    --background-rgb: 10, 20, 15;
+    --foreground-rgb: 240, 250, 245;
+    --primary-rgb: 40, 160, 80;
+    --secondary-rgb: 140, 190, 40;
+    --accent-rgb: 230, 170, 60;
+    
+    /* Enhanced nature mesh gradient */
+    --mesh-gradient: radial-gradient(at 40% 20%, hsla(140, 60%, 40%, 0.2) 0px, transparent 50%), 
+                     radial-gradient(at 80% 0%, hsla(80, 60%, 50%, 0.2) 0px, transparent 50%), 
+                     radial-gradient(at 0% 50%, hsla(30, 70%, 55%, 0.2) 0px, transparent 50%);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Enhanced animations */
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% { 
+    transform: translateY(0); 
+  }
+  50% { 
+    transform: translateY(-10px); 
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(var(--primary-rgb), 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.8);
+  }
+}
+
+@keyframes morph-blob {
+  0% { border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%; }
+  50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  100% { border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes rotate-orbit {
+  0% { transform: rotate(0deg) translateX(10px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(10px) rotate(-360deg); }
+}
+
+/* Enhanced component styles */
+@layer components {
+  .glass-panel {
+    @apply bg-background/60 backdrop-blur-md border border-white/10 rounded-xl shadow-glass;
+  }
+  
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-xl shadow-glass p-6 transition-all duration-300;
+  }
+  
+  .glass-card:hover {
+    @apply shadow-lg transform -translate-y-1;
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+  
+  .gradient-heading {
+    @apply font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
+  }
+  
+  .animated-border {
+    @apply relative rounded-xl p-[1px] overflow-hidden;
+    background: linear-gradient(var(--rotate, 0deg), hsl(var(--primary)), hsl(var(--accent)), hsl(var(--secondary)), hsl(var(--primary)));
+    background-size: 400% 400%;
+    animation: gradient-shift 3s ease-in-out infinite;
+  }
+  
+  .animated-border > * {
+    @apply rounded-[calc(var(--radius)-1px)] bg-background relative z-10;
+  }
+  
+  .blob-shape {
+    border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%;
+    animation: morph-blob 8s ease-in-out infinite;
+  }
+  
+  .neon-glow {
+    box-shadow: 0 0 5px rgba(var(--primary-rgb), 0.2),
+                0 0 20px rgba(var(--primary-rgb), 0.4),
+                0 0 30px rgba(var(--primary-rgb), 0.1);
+  }
+  
+  .orbit-element {
+    animation: rotate-orbit 8s linear infinite;
+  }
+  
+  .shimmer-effect {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .shimmer-effect::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 2s linear infinite;
+    background-size: 200% 100%;
+  }
+  
+  .text-gradient {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(to right, hsl(var(--primary)), hsl(var(--accent)));
+  }
+  
+  .futuristic-grid-bg {
+    background-image: linear-gradient(to right, rgba(var(--primary-rgb), 0.1) 1px, transparent 1px),
+                     linear-gradient(to bottom, rgba(var(--primary-rgb), 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  .card-hover-effect {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .card-hover-effect:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(var(--primary-rgb), 0.2),
+                0 8px 10px -6px rgba(var(--primary-rgb), 0.1);
+  }
+  
+  .interactive-button {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .interactive-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: hsl(var(--primary));
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+  }
+  
+  .interactive-button:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  
+  .interactive-button:hover {
+    color: hsl(var(--primary-foreground));
+    transform: translateY(-2px);
+  }
+  
+  .interactive-button:active {
+    transform: translateY(0);
+  }
+}
