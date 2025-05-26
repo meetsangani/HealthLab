@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
 import { Search } from "lucide-react"
+import BookingButton from "@/app/components/BookingButton"
 
 export default function TestsPage() {
   // Mock test categories
@@ -166,9 +167,11 @@ export default function TestsPage() {
                               Details
                             </Button>
                           </Link>
-                          <Link href={`/booking?test=${test.id}`} className="flex-1">
-                            <Button className="w-full">Book Now</Button>
-                          </Link>
+                          <div className="flex-1">
+                            <BookingButton testId={test.id} className="w-full">
+                              Book Now
+                            </BookingButton>
+                          </div>
                         </div>
                       </CardFooter>
                     </Card>

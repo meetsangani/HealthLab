@@ -8,32 +8,29 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
 
   // Check if user is already logged in
   useEffect(() => {
-    const checkAuthStatus = async () => {
+    // Check localStorage for token and user data
+    const storedToken = localStorage.getItem('authToken');
+    const storedUser = localStorage.getItem('authUser');
+    
+    if (storedToken && storedUser) {
       try {
-        setLoading(true);
-        const token = localStorage.getItem('token');
-        
-        if (token) {
-          // Fetch user profile
-          const userData = await userAPI.getProfile();
-          setUser(userData);
-        }
-      } catch (err) {
-        console.error('Auth check failed:', err);
-        localStorage.removeItem('token');
-        setUser(null);
-      } finally {
-        setLoading(false);
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        // If JSON parsing fails, clear storage
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('authUser');
       }
-    };
-
-    checkAuthStatus();
+    }
+    
+    setLoading(false);
   }, []);
 
   // Login function
@@ -53,7 +50,11 @@ export function AuthProvider({ children }) {
         throw new Error('Invalid response from server. Please try again.');
       }
       
-      localStorage.setItem('token', response.token);
+      // Store token and user in localStorage
+      localStorage.setItem('authToken', response.token);
+      localStorage.setItem('authUser', JSON.stringify(response.user));
+      
+      setToken(response.token);
       setUser(response.user);
       
       return response.user;
@@ -100,8 +101,12 @@ export function AuthProvider({ children }) {
 
   // Logout function
   const logout = () => {
-    localStorage.removeItem('token');
+    // Clear localStorage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('authUser');
+    
     setUser(null);
+    setToken(null);
     router.push('/auth/login');
   };
 
@@ -122,6 +127,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     user,
+    token, // Make sure token is included in the context value
     loading,
     error,
     login,
@@ -129,7 +135,7 @@ export function AuthProvider({ children }) {
     verifyOTP,
     logout,
     updateProfile,
-    isAuthenticated: !!user,
+    isAuthenticated: !!user && !!token,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

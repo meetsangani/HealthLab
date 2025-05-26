@@ -10,9 +10,26 @@ import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { ArrowLeft, Calendar, FileText, Home, MapPin } from "lucide-react";
+import BookingButton from "@/app/components/BookingButton";
+
+// Move isUserBooking outside to avoid closure issues
+const isUserBooking = (booking, user) => {
+  if (!user) return false;
+  return (
+    booking.user === user._id ||
+    booking.user === user.id ||
+    booking.userEmail === user.email ||
+    booking.userName === user.name ||
+    (booking.customer && (
+      booking.customer._id === user._id ||
+      booking.customer.id === user._id ||
+      booking.customer.email === user.email
+    ))
+  );
+};
 
 export default function Dashboard() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, token, isAuthenticated } = useAuth(); // add token here
   const [bookings, setBookings] = useState([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
   const [loadingReports, setLoadingReports] = useState(true);
@@ -23,33 +40,35 @@ export default function Dashboard() {
   // Fetch user bookings and reports
   useEffect(() => {
     async function fetchUserData() {
-      if (!isAuthenticated) return;
+      if (!isAuthenticated || !user) return;
 
       try {
-        // Fetch bookings
         setLoadingBookings(true);
-        
-        // Try to get bookings from localStorage first (for demo purposes)
-        const localBookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-        if (localBookings.length > 0) {
-          setBookings(localBookings);
-          setLoadingBookings(false);
-          return;
+
+        try {
+          const bookingsData = await bookingsAPI.getUserBookings(token); // pass token here
+          if (bookingsData && bookingsData.length > 0) {
+            // Filter by user just to be sure
+            const userBookings = bookingsData.filter(b => isUserBooking(b, user));
+            setBookings(userBookings);
+          } else {
+            setBookings([]);
+          }
+        } catch (apiError) {
+          console.error("Error fetching bookings from API:", apiError);
+          setBookings([]);
         }
-        
-        // Otherwise fetch from API
-        const bookingsData = await bookingsAPI.getUserBookings();
-        setBookings(bookingsData);
       } catch (err) {
         console.error("Error fetching bookings:", err);
         setError("Failed to load bookings");
+        setBookings([]);
       } finally {
         setLoadingBookings(false);
       }
     }
 
     fetchUserData();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user, token]); // add token to deps
 
   if (!isAuthenticated) {
     return (
@@ -58,7 +77,7 @@ export default function Dashboard() {
           <CardContent className="p-6 text-center">
             <p className="mb-4">Please sign in to view your dashboard</p>
             <Button asChild>
-              <Link href="/auth/login">Sign In</Link>
+              <Link href="/auth/login?redirect=/dashboard">Sign In</Link>
             </Button>
           </CardContent>
         </Card>
@@ -90,9 +109,9 @@ export default function Dashboard() {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">My Bookings</h1>
-          <Link href="/tests">
-            <Button variant="outline">Book New Test</Button>
-          </Link>
+          <BookingButton variant="outline">
+            Book New Test
+          </BookingButton>
         </div>
 
         {bookings.length === 0 ? (
@@ -103,9 +122,9 @@ export default function Dashboard() {
               </div>
               <h3 className="text-lg font-medium mb-2">No bookings found</h3>
               <p className="text-muted-foreground mb-4">You haven't booked any tests yet.</p>
-              <Link href="/tests">
-                <Button>Book Your First Test</Button>
-              </Link>
+              <BookingButton>
+                Book Your First Test
+              </BookingButton>
             </CardContent>
           </Card>
         ) : (

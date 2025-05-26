@@ -12,12 +12,9 @@ export const availableThemes = ["light", "dark", "system", "dim", "ocean", "suns
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
-  storageKey = "ui-theme",
+  defaultTheme = "dark", // Changed from "system" to "dark"
 }) {
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem(storageKey) || defaultTheme
-  );
+  const [theme, setTheme] = useState(defaultTheme);
   
   const [resolvedTheme, setResolvedTheme] = useState("light");
 
@@ -110,13 +107,11 @@ export function ThemeProvider({
   const value = {
     theme,
     setTheme: (newTheme) => {
-      localStorage.setItem(storageKey, newTheme);
       setTheme(newTheme);
     },
     isDarkTheme: resolvedTheme === "dark" || resolvedTheme === "dim" || resolvedTheme === "ocean" || resolvedTheme === "sunset" || resolvedTheme === "purple",
     toggleTheme: () => {
       const newTheme = resolvedTheme === "light" ? "dark" : "light";
-      localStorage.setItem(storageKey, newTheme);
       setTheme(newTheme);
     },
     themes: availableThemes,

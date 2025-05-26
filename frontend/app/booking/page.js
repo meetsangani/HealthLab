@@ -14,6 +14,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { format } from "date-fns"
 import { Upload, ArrowLeft, ArrowRight } from "lucide-react"
 import { toast } from "@/components/ui/use-toast"
+import { bookingsAPI } from "@/lib/api"
+import { useAuth } from "@/contexts/AuthContext"
 
 export default function BookingPage() {
   const searchParams = useSearchParams()
@@ -34,6 +36,8 @@ export default function BookingPage() {
   const [errors, setErrors] = useState({})
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [bookingReference, setBookingReference] = useState("")
+
+  const { user, token, isAuthenticated } = useAuth();  // Extract token from auth context
 
   // Define time slots
   const timeSlots = [
@@ -172,46 +176,47 @@ export default function BookingPage() {
     setIsLoading(true)
 
     try {
+      // Check if user is authenticated
+      if (!isAuthenticated || !token) {
+        // Redirect to login if not authenticated
+        toast({
+          title: "Authentication required",
+          description: "Please log in to book a test",
+          variant: "destructive",
+        });
+        router.push(`/auth/login?redirect=${encodeURIComponent('/booking?test=' + testId)}`);
+        return;
+      }
+
+      console.log("Using token for booking:", token ? "Token available" : "No token");
+
       // Create booking data
       const bookingData = {
-        testId: test.id,
+        test: test.id,
         testName: test.name,
         price: test.price,
         turnaround: test.turnaround,
         date: date ? format(date, "yyyy-MM-dd") : null,
         timeSlot,
         collectionType,
-        customer: {
-          name,
-          email,
-          mobile,
-          address,
-        },
+        userName: name,
+        userEmail: email,
+        userPhone: mobile, // Adding phone number
+        address,
+        notes: "",
         status: "confirmed",
-        createdAt: new Date().toISOString(),
       };
 
-      // In a real app, you would use an API call like this:
-      // const response = await fetch('/api/bookings', {
-      //   method: 'POST',
-      //   body: JSON.stringify(bookingData),
-      //   headers: { 'Content-Type': 'application/json' }
-      // });
-      // const data = await response.json();
-
-      // For now, we'll simulate saving to localStorage
-      const bookingId = `BK${Math.floor(10000 + Math.random() * 90000)}`;
-      bookingData.id = bookingId;
-      setBookingReference(bookingId);
+      // Send booking data to backend API with the token
+      const response = await bookingsAPI.createBooking(bookingData, token);
       
-      // Save to localStorage (in a real app this would be in your database)
-      const existingBookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-      localStorage.setItem('bookings', JSON.stringify([...existingBookings, bookingData]));
+      // Store booking reference for success message
+      setBookingReference(response.id || response._id);
       
       // Show success notification
       toast({
         title: "Booking Confirmed",
-        description: `Your booking reference is ${bookingId}`,
+        description: `Your booking reference is ${response.id || response._id}`,
       });
       
       // Move to success step
@@ -365,7 +370,12 @@ export default function BookingPage() {
                       Drag and drop your prescription here or click to browse
                     </p>
                     <Input id="prescription" type="file" className="hidden" />
-                    <Button variant="outline" size="sm" onClick={() => document.getElementById("prescription").click()} className="px-3 py-1 text-sm rounded-full">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => document.getElementById("prescription").click()} 
+                      className="px-3 py-1 text-sm rounded-full"
+                    >
                       Browse Files
                     </Button>
                   </div>
@@ -397,7 +407,6 @@ export default function BookingPage() {
                     </CardContent>
                   </Card>
                 </div>
-
                 <div>
                   <h3 className="font-medium mb-2">Appointment Details</h3>
                   <Card>
@@ -425,7 +434,6 @@ export default function BookingPage() {
                     </CardContent>
                   </Card>
                 </div>
-
                 <div>
                   <h3 className="font-medium mb-2">Personal Details</h3>
                   <Card>
@@ -497,25 +505,23 @@ export default function BookingPage() {
               </div>
             )}
           </CardContent>
-
           {step < 4 && (
             <CardFooter className="flex justify-between">
               {step > 1 ? (
-                <Button variant="outline" onClick={handlePrevStep} className="px-3 py-1 text-sm rounded-full">
+                <Button variant="outline" onClick={handlePrevStep} className="px-3 py-1 text-sm rounded-full btn-enhanced btn-ripple">
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Back
                 </Button>
               ) : (
                 <div></div>
               )}
-
-              {step < 3 ? (
-                <Button onClick={handleNextStep} className="px-3 py-1 text-sm rounded-full">
+              {(step === 1 || step === 2) ? (
+                <Button onClick={handleNextStep} className="px-3 py-1 text-sm rounded-full btn-enhanced btn-shine">
                   Next
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               ) : (
-                <Button onClick={handleSubmit} disabled={isLoading} className="px-3 py-1 text-sm rounded-full">
+                <Button onClick={handleSubmit} disabled={isLoading} className="px-3 py-1 text-sm rounded-full btn-enhanced btn-pulse">
                   {isLoading ? "Processing..." : "Confirm Booking"}
                 </Button>
               )}

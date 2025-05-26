@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { testsAPI } from '../utils/api';
+import { useAuth } from '../contexts/AuthContext';
+import BookButton from '../components/BookButton';
 
 const TestCatalogPage = () => {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,9 +30,17 @@ const TestCatalogPage = () => {
 
   // Filter tests based on search term
   const filteredTests = tests.filter(test => 
-    test.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    test.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (test.description && test.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  const handleBookTest = (testId) => {
+    if (isAuthenticated) {
+      navigate(`/booking?testId=${testId}`);
+    } else {
+      navigate(`/login?redirect=/booking?testId=${testId}`);
+    }
+  };
 
   if (loading) return <div className="container mx-auto p-4">Loading tests...</div>;
   if (error) return <div className="container mx-auto p-4 text-red-500">{error}</div>;
@@ -74,12 +86,9 @@ const TestCatalogPage = () => {
                   >
                     View Details
                   </Link>
-                  <Link 
-                    to={`/booking?testId=${test._id}`}
-                    className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-4 rounded-full text-sm transition duration-200"
-                  >
-                    Book Now
-                  </Link>
+                  <div>
+                    <BookButton testId={test._id} className="py-1 px-4 text-sm" />
+                  </div>
                 </div>
               </div>
             </div>

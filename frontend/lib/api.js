@@ -27,27 +27,34 @@ async function fetchAPI(endpoint, options = {}) {
     ...options.headers,
   };
 
-  // Add auth token if available
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('token');
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
+  // Add auth token if available - extract from options
+  const token = options.token;
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
   }
 
+  // Create a new options object without the token property
+  const { token: _, ...cleanOptions } = options;
+
   // Format request body if it's an object
-  let requestBody = options.body;
+  let requestBody = cleanOptions.body;
   if (requestBody && typeof requestBody === 'object') {
     requestBody = JSON.stringify(requestBody);
   }
 
   const config = {
-    ...options,
+    ...cleanOptions,
     headers,
     body: requestBody
   };
 
   try {
+    console.log('Request config:', {
+      url,
+      method: config.method || 'GET',
+      headers: { ...config.headers, Authorization: config.headers.Authorization ? 'Bearer [REDACTED]' : undefined },
+    });
+
     const response = await fetch(url, config);
     
     // Check content type to determine how to parse the response
@@ -131,17 +138,23 @@ export const testsAPI = {
 
 // Bookings API
 export const bookingsAPI = {
-  createBooking: (bookingData) => fetchAPI('/bookings', {
+  createBooking: (bookingData, token) => fetchAPI('/bookings', {
     method: 'POST',
-    body: JSON.stringify(bookingData),
+    body: bookingData,
+    token
   }),
   
-  getUserBookings: () => fetchAPI('/bookings'),
+  getUserBookings: (token) => fetchAPI('/bookings', {
+    token
+  }),
   
-  getBookingById: (id) => fetchAPI(`/bookings/${id}`),
+  getBookingById: (id, token) => fetchAPI(`/bookings/${id}`, {
+    token
+  }),
   
-  cancelBooking: (id) => fetchAPI(`/bookings/${id}/cancel`, {
+  cancelBooking: (id, token) => fetchAPI(`/bookings/${id}/cancel`, {
     method: 'PUT',
+    token
   }),
 };
 

@@ -110,7 +110,7 @@ export default function AdminDashboardPage() {
                   <CardDescription>Latest test bookings</CardDescription>
                 </div>
                 <Link href="/admin/bookings">
-                  <Button variant="outline" size="sm" className="px-3 py-1 text-xs rounded-full">
+                  <Button variant="outline" size="sm" className="px-3 py-1 text-xs rounded-full btn-enhanced btn-shine">
                     View All
                   </Button>
                 </Link>
@@ -149,25 +149,25 @@ export default function AdminDashboardPage() {
               </CardHeader>
               <CardContent className="grid gap-4">
                 <Link href="/admin/bookings/new">
-                  <Button className="w-full justify-start px-3 py-1 text-sm rounded-full" variant="outline">
+                  <Button className="w-full justify-start px-3 py-1 text-sm rounded-full btn-enhanced btn-shine" variant="outline">
                     <Calendar className="mr-2 h-4 w-4" />
                     Create New Booking
                   </Button>
                 </Link>
                 <Link href="/admin/tests/new">
-                  <Button className="w-full justify-start px-3 py-1 text-sm rounded-full" variant="outline">
+                  <Button className="w-full justify-start px-3 py-1 text-sm rounded-full btn-enhanced btn-shine" variant="outline">
                     <FileText className="mr-2 h-4 w-4" />
                     Add New Test
                   </Button>
                 </Link>
                 <Link href="/admin/reports/upload">
-                  <Button className="w-full justify-start px-3 py-1 text-sm rounded-full" variant="outline">
+                  <Button className="w-full justify-start px-3 py-1 text-sm rounded-full btn-enhanced btn-shine" variant="outline">
                     <Upload className="mr-2 h-4 w-4" />
                     Upload Test Report
                   </Button>
                 </Link>
                 <Link href="/admin/bookings/export">
-                  <Button className="w-full justify-start px-3 py-1 text-sm rounded-full" variant="outline">
+                  <Button className="w-full justify-start px-3 py-1 text-sm rounded-full btn-enhanced btn-shine" variant="outline">
                     <Download className="mr-2 h-4 w-4" />
                     Export Booking Data
                   </Button>

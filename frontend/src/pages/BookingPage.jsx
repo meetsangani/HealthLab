@@ -31,26 +31,24 @@ const BookingPage = () => {
       setLoading(false);
       return;
     }
-
     const fetchTestDetails = async () => {
       try {
         const data = await testsAPI.getTestById(testId);
         setTest(data);
       } catch (err) {
-        console.error("Error fetching test details:", err);
         setError("Failed to load test details. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchTestDetails();
   }, [testId]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!isAuthenticated && !loading) {
-      navigate(`/login?redirect=/booking?testId=${testId}`);
+      // Store the current URL in the redirect param to return after login
+      navigate(`/login?redirect=/booking?testId=${testId || ''}`);
     }
   }, [isAuthenticated, loading, navigate, testId]);
 
@@ -64,37 +62,37 @@ const BookingPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!test || !user) return;
-    
+
     setSubmitting(true);
     setError(null);
-    
+
     try {
-      // Create booking data object
+      // Prepare booking data for backend
       const bookingData = {
         test: testId,
+        testName: test.name,
+        userName: user.name,
+        userEmail: user.email,
+        customer: user._id, // <-- Add this line
         date: new Date(formData.date).toISOString(),
         timeSlot: formData.timeSlot,
         collectionType: formData.collectionType,
         address: formData.address,
-        notes: formData.notes
+        notes: formData.notes,
+        price: test.price,
+        status: 'confirmed',
+        // createdAt will be set by backend
       };
-      
-      // Submit booking to the backend
-      const result = await bookingsAPI.createBooking(bookingData);
-      
-      // Handle successful booking
+
+      // Only store in MongoDB, do not fallback to localStorage
+      const result = await bookingsAPI.createBooking(bookingData, token);
       setSuccess(true);
       setTimeout(() => {
-        navigate('/dashboard', { 
-          state: { 
-            bookingSuccess: true,
-            bookingId: result._id 
-          } 
-        });
+        navigate(`/dashboard?bookingRef=${result._id || result.id}`);
       }, 2000);
-      
+
     } catch (err) {
       console.error("Error creating booking:", err);
       setError("Failed to create booking. Please try again.");

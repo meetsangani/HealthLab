@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Clock, AlertCircle, FileText, Beaker, ArrowLeft } from "lucide-react"
+import BookingButton from "@/app/components/BookingButton"
 
 export default function TestDetailPage({ params }) {
   const testId = Number.parseInt(params.id)
@@ -181,9 +182,9 @@ export default function TestDetailPage({ params }) {
               </div>
 
               <div className="space-y-3">
-                <Link href={`/booking?test=${test.id}`}>
-                  <Button className="w-full px-3 py-1 text-sm rounded-full">Book Now</Button>
-                </Link>
+                <BookingButton testId={test.id} className="w-full px-3 py-1 text-sm rounded-full">
+                  Book Now
+                </BookingButton>
                 <Link href="/contact">
                   <Button variant="outline" className="w-full px-3 py-1 text-sm rounded-full">
                     Contact for Queries

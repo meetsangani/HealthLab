@@ -32,7 +32,7 @@ export default function Header() {
   const isActive = (path) => pathname === path;
 
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-background border-b border-border/20">
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8" aria-label="Global">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
@@ -51,7 +51,7 @@ export default function Header() {
                   className={`px-3 py-2 rounded-md text-sm font-medium ${
                     isActive(item.href)
                       ? 'text-primary'
-                      : 'text-gray-700 hover:text-primary'
+                      : 'text-foreground hover:text-primary'
                   }`}
                 >
                   {item.name}

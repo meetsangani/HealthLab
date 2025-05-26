@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Microscope, FlaskRoundIcon as Flask, Droplet, Heart, Activity, Shield, Clock, CheckCircle } from "lucide-react"
 import TestimonialCard from "@/components/testimonial-card"
 import FaqSection from "@/components/faq-section"
+import BookingButton from "@/app/components/BookingButton"
 
 export default function Home() {
   const testCategories = [
@@ -82,13 +83,11 @@ export default function Home() {
               Accurate diagnostics with state-of-the-art technology and experienced professionals.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <Link href="/auth/login">
-                <Button size="lg" className="w-full sm:w-auto px-3 py-1 text-sm rounded-full">
-                  Book a Test
-                </Button>
-              </Link>
+              <BookingButton size="lg" className="w-full sm:w-auto px-3 py-1 text-sm rounded-full btn-enhanced btn-shine">
+                Book a Test
+              </BookingButton>
               <Link href="/contact">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto px-3 py-1 text-sm rounded-full">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto px-3 py-1 text-sm rounded-full btn-enhanced btn-ripple">
                   Contact Us
                 </Button>
               </Link>
@@ -171,7 +170,7 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {testCategories.map((category, index) => (
-              <Link key={index} href="/auth/login">
+              <Link key={index} href="/tests">
                 <Card className="h-full transition-all hover:shadow-md">
                   <CardContent className="pt-6">
                     <div className="flex flex-col h-full">
@@ -190,8 +189,8 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center mt-10">
-            <Link href="/auth/login">
-              <Button size="lg" className="px-3 py-1 text-sm rounded-full">View All Tests</Button>
+            <Link href="/tests">
+              <Button size="lg" className="px-3 py-1 text-sm rounded-full btn-enhanced btn-shine">View All Tests</Button>
             </Link>
           </div>
         </div>
@@ -243,7 +242,7 @@ export default function Home() {
           </div>
           <div className="text-center mt-10">
             <Link href="/auth/login">
-              <Button size="lg" className="px-3 py-1 text-sm rounded-full">Book Now</Button>
+              <Button size="lg" className="px-3 py-1 text-sm rounded-full btn-enhanced btn-pulse">Book Now</Button>
             </Link>
           </div>
         </div>
@@ -279,16 +278,18 @@ export default function Home() {
             results quickly.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/login">
-              <Button size="lg" variant="secondary" className="px-3 py-1 text-sm rounded-full">
-                Book a Test
-              </Button>
-            </Link>
+            <BookingButton
+              size="lg"
+              variant="outline"
+              className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground hover:text-primary px-3 py-1 text-sm rounded-full btn-enhanced btn-shine"
+            >
+              Book a Test
+            </BookingButton>
             <Link href="/contact">
               <Button
                 size="lg"
                 variant="outline"
-                className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground hover:text-primary px-3 py-1 text-sm rounded-full"
+                className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground hover:text-primary px-3 py-1 text-sm rounded-full btn-enhanced btn-shine"
               >
                 Contact Us
               </Button>

@@ -1,40 +1,30 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export const apiFetch = async (endpoint, options = {}) => {
-  const url = `${API_BASE_URL}/api${endpoint}`;
-  
-  const config = {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-    ...options,
-  };
-
   // Add auth token if provided
   if (options.token) {
-    config.headers.Authorization = `Bearer ${options.token}`;
+    options.headers = {
+      ...options.headers,
+      'Authorization': `Bearer ${options.token}`
+    };
+    // Remove token from options to avoid sending it as a separate parameter
+    const { token, ...restOptions } = options;
+    options = restOptions;
   }
 
-  // Add body if provided
-  if (options.body) {
-    config.body = JSON.stringify(options.body);
-  }
+  const url = `${API_BASE_URL}${endpoint}`;
 
   try {
-    const response = await fetch(url, config);
-    
+    const response = await fetch(url, options);
+
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'Network error' }));
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || 'API request failed');
     }
-    
+
     return await response.json();
   } catch (error) {
-    if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
-      throw new Error('Cannot connect to the server. Please check if the backend service is running.');
-    }
+    console.error('API fetch error:', error);
     throw error;
   }
 };
@@ -47,9 +37,11 @@ export const testsAPI = {
 
 // Add bookingsAPI for handling test bookings
 export const bookingsAPI = {
-  createBooking: (bookingData) => apiFetch('/bookings', {
+  createBooking: (bookingData, token) => apiFetch('/bookings', {
     method: 'POST',
-    body: bookingData
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(bookingData),
+    token
   }),
   getUserBookings: (token) => apiFetch('/bookings', {
     token

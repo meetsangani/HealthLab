@@ -2,9 +2,26 @@ import { useEffect, useState } from 'react';
 import { apiFetch } from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
+import BookButton from '../../components/BookButton';
+
+// Move isUserBooking outside to avoid closure issues
+const isUserBooking = (booking, user) => {
+  if (!user) return false;
+  return (
+    booking.user === user._id ||
+    booking.user === user.id ||
+    booking.userEmail === user.email ||
+    booking.userName === user.name ||
+    (booking.customer && (
+      booking.customer._id === user._id ||
+      booking.customer.id === user._id ||
+      booking.customer.email === user.email
+    ))
+  );
+};
 
 const Dashboard = () => {
-  const { token, isAuthenticated } = useAuth();
+  const { token, user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [bookings, setBookings] = useState([]);
@@ -23,21 +40,22 @@ const Dashboard = () => {
   }, [location, navigate]);
 
   useEffect(() => {
-    if (token) {
+    if (token && user) {
       setLoading(true);
       
-      // Try to get bookings from localStorage first (for demo purposes)
+      // Always filter by user
       const localBookings = JSON.parse(localStorage.getItem('bookings') || '[]');
       if (localBookings.length > 0) {
-        setBookings(localBookings);
+        const userBookings = localBookings.filter(b => isUserBooking(b, user));
+        setBookings(userBookings);
         setLoading(false);
         return;
       }
       
-      // Otherwise fetch from API
-      apiFetch('/bookings', { token })
+      apiFetch(`/bookings?userId=${user._id}`, { token })
         .then(data => {
-          setBookings(data);
+          const userBookings = data.filter(b => isUserBooking(b, user));
+          setBookings(userBookings);
           setLoading(false);
         })
         .catch(() => {
@@ -45,7 +63,7 @@ const Dashboard = () => {
           setLoading(false);
         });
     }
-  }, [token]);
+  }, [token, user]);
 
   // Stats
   const total = bookings.length;
@@ -67,12 +85,9 @@ const Dashboard = () => {
         <div className="flex-1">
           <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-2">Welcome to Your Dashboard</h2>
           <p className="text-gray-700 mb-4">Manage your health tests, view reports, and keep track of your bookings in one place.</p>
-          <button 
-            onClick={handleBookTestClick}
-            className="btn btn-primary px-5 py-2 rounded-full text-base font-semibold shadow hover:shadow-md transition"
-          >
+          <BookButton className="px-5 py-2 text-base font-semibold shadow hover:shadow-md transition">
             Book a Test
-          </button>
+          </BookButton>
         </div>
         <div className="flex-1 flex justify-center">
           <img src="/dashboard-illustration.svg" alt="Dashboard" className="w-48 md:w-64" loading="lazy" />
@@ -133,9 +148,9 @@ const Dashboard = () => {
                       <span className="font-mono">{(booking._id || booking.id)?.slice(-6).toUpperCase()}</span>
                     </div>
                     <div className="flex space-x-2 mt-auto">
-                      <button className="btn btn-primary w-full px-3 py-1 text-sm rounded-full">View Details</button>
+                      <button className="btn btn-primary btn-enhanced btn-shine w-full px-3 py-1 text-sm rounded-full">View Details</button>
                       {booking.status === 'completed' && (
-                        <button className="btn btn-secondary w-full px-3 py-1 text-sm rounded-full">Download Report</button>
+                        <button className="btn btn-secondary btn-enhanced btn-shine w-full px-3 py-1 text-sm rounded-full">Download Report</button>
                       )}
                     </div>
                   </div>
@@ -146,12 +161,9 @@ const Dashboard = () => {
             <div className="flex flex-col items-center justify-center py-16">
               <img src="/empty-bookings.svg" alt="No bookings" className="w-40 mb-6" loading="lazy" />
               <p className="text-gray-600 mb-4 text-lg">You don't have any bookings yet.</p>
-              <button 
-                onClick={handleBookTestClick}
-                className="btn btn-primary px-4 py-2 text-base rounded-full"
-              >
+              <BookButton className="px-4 py-2 text-base rounded-full">
                 Book a Test
-              </button>
+              </BookButton>
             </div>
           )}
         </>
@@ -160,17 +172,19 @@ const Dashboard = () => {
   );
 };
 
-// Stat Card Component
-function StatCard({ label, value, color }) {
-  return (
-    <div className={`rounded-xl p-6 flex flex-col items-center shadow-sm ${color}`}>
-      <div className="text-3xl font-bold mb-1">{value}</div>
-      <div className="text-sm font-medium">{label}</div>
-    </div>
-  );
-}
+// Add missing helper functions at the end of the file
+const getStatusColor = (status) => {
+  const colorMap = {
+    pending: 'bg-yellow-100 text-yellow-800',
+    confirmed: 'bg-blue-100 text-blue-800',
+    completed: 'bg-green-100 text-green-800',
+    cancelled: 'bg-red-100 text-red-800',
+    sample_collected: 'bg-indigo-100 text-indigo-800',
+    report_ready: 'bg-purple-100 text-purple-800'
+  };
+  return colorMap[status] || 'bg-gray-100 text-gray-800';
+};
 
-// Helper functions
 const formatStatus = (status) => {
   const statusMap = {
     pending: 'Pending',
@@ -183,16 +197,12 @@ const formatStatus = (status) => {
   return statusMap[status] || status;
 };
 
-const getStatusColor = (status) => {
-  const colorMap = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    confirmed: 'bg-blue-100 text-blue-800',
-    completed: 'bg-green-100 text-green-800',
-    cancelled: 'bg-red-100 text-red-800',
-    sample_collected: 'bg-indigo-100 text-indigo-800',
-    report_ready: 'bg-purple-100 text-purple-800'
-  };
-  return colorMap[status] || 'bg-gray-100 text-gray-800';
-};
+// Add StatCard component
+const StatCard = ({ label, value, color }) => (
+  <div className={`rounded-xl p-4 ${color} text-center`}>
+    <p className="text-2xl font-bold">{value}</p>
+    <p className="text-sm font-medium">{label}</p>
+  </div>
+);
 
 export default Dashboard;

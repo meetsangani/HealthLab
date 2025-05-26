@@ -8,7 +8,7 @@ const Layout = () => {
     <div className="min-h-screen flex flex-col">
       {/* <nav className="bg-white shadow-md sticky top-0 z-10">
         <div className="container mx-auto flex items-center justify-between py-4 px-4">
-          <Link to="/" className="text-2xl font-bold text-blue-800">HealthLab</Link>
+          <Link to="/" className="text-2xl font-bold text-primary">HealthLab</Link>
           <div className="flex items-center space-x-2 md:space-x-4">
             <Link to="/" className="btn btn-sm btn-outline">Home</Link>
             <Link to="/tests" className="btn btn-sm btn-outline">Tests</Link>

@@ -5,7 +5,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(() => localStorage.getItem('token'));
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,7 +18,6 @@ export function AuthProvider({ children }) {
         .catch(() => {
           setUser(null);
           setToken(null);
-          localStorage.removeItem('token');
           setLoading(false);
         });
     } else {
@@ -40,10 +39,6 @@ export function AuthProvider({ children }) {
       setToken(data.token);
       setUser(data.user);
       
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('token', data.token);
-      }
-      
       return data;
     } catch (err) {
       console.error('Login failed', err);
@@ -61,7 +56,6 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem('token');
   };
 
   const isAuthenticated = !!user && !!token;

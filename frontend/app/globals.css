@@ -21,14 +21,14 @@ body {
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
+    --primary: 217 91% 60%; /* blue */
     --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
+    --secondary: 160 84% 39%; /* teal/green */
+    --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+    --accent: 190 96% 46%; /* cyan */
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
@@ -52,9 +52,9 @@ body {
     /* Enhanced variables */
     --background-rgb: 255, 255, 255;
     --foreground-rgb: 10, 10, 10;
-    --primary-rgb: 23, 23, 23;
-    --accent-rgb: 245, 245, 245;
-    --secondary-rgb: 245, 245, 245;
+    --primary-rgb: 29, 78, 216;
+    --accent-rgb: 6, 182, 212;
+    --secondary-rgb: 16, 185, 129;
     
     /* Enhanced monochrome palette */
     --mono-50: 0 0% 98%;
@@ -86,9 +86,9 @@ body {
     --gradient-shimmer: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     
     /* Mesh gradient backgrounds */
-    --mesh-gradient: radial-gradient(at 40% 20%, hsla(var(--primary) / 0.1) 0px, transparent 50%), 
-                     radial-gradient(at 80% 0%, hsla(var(--accent) / 0.1) 0px, transparent 50%), 
-                     radial-gradient(at 0% 50%, hsla(var(--secondary) / 0.1) 0px, transparent 50%);
+    --mesh-gradient: radial-gradient(at 40% 20%, hsla(217,91%,60%,0.10) 0px, transparent 50%), 
+                     radial-gradient(at 80% 0%, hsla(190,96%,46%,0.10) 0px, transparent 50%), 
+                     radial-gradient(at 0% 50%, hsla(160,84%,39%,0.10) 0px, transparent 50%);
                      
     /* Enhanced success, info, warning variables */
     --success: 142 76% 36%;
@@ -100,70 +100,51 @@ body {
   }
   
   .dark {
-    /* Original dark variables */
-    --background: 0 0% 3.9%;
+    /* Original dark variables - updated colors to match the screenshot */
+    --background: 195 36% 13%; /* Dark blue/teal background like HealthLab header */
     --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
+    --card: 195 36% 15%; /* Slightly lighter than background */
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
+    --popover: 195 36% 15%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
+    --primary: 195 80% 50%; /* Blue color like in the screenshot */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 195 30% 20%; /* Adjusted to match new background */
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
+    --muted: 195 30% 20%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
+    --accent: 195 80% 40%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 195 36% 20%;
+    --input: 195 36% 20%;
+    --ring: 195 80% 50%;
     
     /* Enhanced dark variables */
-    --background-rgb: 10, 10, 10;
+    --background-rgb: 20, 42, 54; /* RGB equivalent of the HSL background color */
     --foreground-rgb: 240, 240, 240;
-    --primary-rgb: 240, 240, 240;
-    --accent-rgb: 30, 30, 30;
-    --secondary-rgb: 25, 25, 25;
-    
-    /* Enhanced monochrome palette */
-    --mono-50: 0 0% 98%;
-    --mono-100: 0 0% 92%;
-    --mono-200: 0 0% 85%;
-    --mono-300: 0 0% 78%;
-    --mono-400: 0 0% 60%;
-    --mono-500: 0 0% 45%;
-    --mono-600: 0 0% 32%;
-    --mono-700: 0 0% 25%;
-    --mono-800: 0 0% 15%;
-    --mono-900: 0 0% 9%;
-    --mono-950: 0 0% 4%;
-    
-    /* Enhanced dark shadows */
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 6px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25), 0 2px 10px rgba(0, 0, 0, 0.22);
-    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.35), 0 5px 25px rgba(0, 0, 0, 0.25);
-    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.4), 0 10px 10px rgba(0, 0, 0, 0.3);
+    --primary-rgb: 33, 150, 203;
+    --accent-rgb: 6, 182, 212;
+    --secondary-rgb: 10, 200, 255;
     
     /* Enhanced dark mesh gradient */
-    --mesh-gradient: radial-gradient(at 40% 20%, hsla(var(--primary) / 0.2) 0px, transparent 50%), 
-                     radial-gradient(at 80% 0%, hsla(var(--accent) / 0.2) 0px, transparent 50%), 
-                     radial-gradient(at 0% 50%, hsla(var(--secondary) / 0.2) 0px, transparent 50%);
+    --mesh-gradient: radial-gradient(at 40% 20%, hsla(195, 80%, 50%, 0.15) 0px, transparent 50%), 
+                     radial-gradient(at 80% 0%, hsla(190,96%,46%,0.15) 0px, transparent 50%), 
+                     radial-gradient(at 0% 50%, hsla(195,36%,30%,0.15) 0px, transparent 50%);
+    
+    /* Enhanced monochrome palette - adjusted to blue tones */
+    --mono-50: 195 10% 98%;
+    --mono-100: 195 10% 92%;
+    --mono-200: 195 10% 85%;
+    --mono-300: 195 10% 78%;
+    --mono-400: 195 10% 60%;
+    --mono-500: 195 10% 45%;
+    --mono-600: 195 10% 32%;
+    --mono-700: 195 15% 25%;
+    --mono-800: 195 20% 15%;
+    --mono-900: 195 25% 10%;
+    --mono-950: 195 30% 5%;
   }
   
   /* Enhanced sunset theme */
@@ -480,51 +461,41 @@ body {
   .glass-panel {
     @apply bg-background/60 backdrop-blur-md border border-white/10 rounded-xl shadow-glass;
   }
-  
   .glass-card {
     @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-xl shadow-glass p-6 transition-all duration-300;
   }
-  
   .glass-card:hover {
     @apply shadow-lg transform -translate-y-1;
     background-color: rgba(255, 255, 255, 0.15);
   }
-  
   .gradient-heading {
     @apply font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
   }
-  
   .animated-border {
     @apply relative rounded-xl p-[1px] overflow-hidden;
     background: linear-gradient(var(--rotate, 0deg), hsl(var(--primary)), hsl(var(--accent)), hsl(var(--secondary)), hsl(var(--primary)));
     background-size: 400% 400%;
     animation: gradient-shift 3s ease-in-out infinite;
   }
-  
   .animated-border > * {
     @apply rounded-[calc(var(--radius)-1px)] bg-background relative z-10;
   }
-  
   .blob-shape {
     border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%;
     animation: morph-blob 8s ease-in-out infinite;
   }
-  
   .neon-glow {
     box-shadow: 0 0 5px rgba(var(--primary-rgb), 0.2),
                 0 0 20px rgba(var(--primary-rgb), 0.4),
                 0 0 30px rgba(var(--primary-rgb), 0.1);
   }
-  
   .orbit-element {
     animation: rotate-orbit 8s linear infinite;
   }
-  
   .shimmer-effect {
     position: relative;
     overflow: hidden;
   }
-  
   .shimmer-effect::after {
     content: '';
     position: absolute;
@@ -533,37 +504,31 @@ body {
     animation: shimmer 2s linear infinite;
     background-size: 200% 100%;
   }
-  
   .text-gradient {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-image: linear-gradient(to right, hsl(var(--primary)), hsl(var(--accent)));
+    background-image: linear-gradient(to right, hsl(217,91%,60%), hsl(160,84%,39%), hsl(190,96%,46%));
   }
-  
   .futuristic-grid-bg {
     background-image: linear-gradient(to right, rgba(var(--primary-rgb), 0.1) 1px, transparent 1px),
                      linear-gradient(to bottom, rgba(var(--primary-rgb), 0.1) 1px, transparent 1px);
     background-size: 20px 20px;
   }
-  
   .card-hover-effect {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
-  
   .card-hover-effect:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px -5px rgba(var(--primary-rgb), 0.2),
                 0 8px 10px -6px rgba(var(--primary-rgb), 0.1);
   }
-  
   .interactive-button {
     position: relative;
     overflow: hidden;
     z-index: 1;
     transition: color 0.3s ease, transform 0.2s ease;
   }
-  
   .interactive-button::before {
     content: '';
     position: absolute;
@@ -577,17 +542,14 @@ body {
     transform-origin: right;
     transition: transform 0.3s ease;
   }
-  
   .interactive-button:hover::before {
     transform: scaleX(1);
     transform-origin: left;
   }
-  
   .interactive-button:hover {
     color: hsl(var(--primary-foreground));
     transform: translateY(-2px);
   }
-  
   .interactive-button:active {
     transform: translateY(0);
   }

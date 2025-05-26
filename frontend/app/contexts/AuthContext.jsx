@@ -6,20 +6,17 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('token');
+    }
+    return null;
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get token from localStorage on client side only
-    const storedToken = localStorage.getItem('token');
-    if (storedToken) {
-      setToken(storedToken);
-      // Here you would typically validate the token with your API
-      // For now, we'll just set loading to false
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
+    // Initialize auth state
+    setLoading(false);
   }, []);
 
   const login = async (emailOrPhone, password) => {
@@ -50,8 +47,10 @@ export function AuthProvider({ children }) {
       }
 
       setToken(data.token);
-      localStorage.setItem('token', data.token);
       setUser(data.user);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('token', data.token);
+      }
       return data;
     } catch (error) {
       console.error('Login error:', error);
@@ -78,7 +77,9 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem('token');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+    }
   };
 
   const isAuthenticated = !!user && !!token;

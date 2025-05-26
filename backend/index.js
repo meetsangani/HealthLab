@@ -2,11 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+require('dotenv').config();
 const path = require('path');
-
-// Load environment variables
-dotenv.config();
 
 // Import routes
 const authRoutes = require('./routes/auth.routes');
@@ -55,7 +52,7 @@ app.use('/api/*', (req, res) => {
 console.log(`Starting backend on port ${PORT}...`);
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
-    console.log('Connected to MongoDB');
+    console.log('Connected to MongoDB successfully');
     
     // Start server
     app.listen(PORT, () => {
