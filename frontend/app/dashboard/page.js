@@ -6,7 +6,7 @@ import { bookingsAPI } from "@/lib/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { ArrowLeft, Calendar, FileText, Home, MapPin } from "lucide-react";
@@ -29,6 +29,7 @@ const isUserBooking = (booking, user) => {
 };
 
 export default function Dashboard() {
+  const router = useRouter();
   const { user, token, isAuthenticated } = useAuth(); // add token here
   const [bookings, setBookings] = useState([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
@@ -69,6 +70,10 @@ export default function Dashboard() {
 
     fetchUserData();
   }, [isAuthenticated, user, token]); // add token to deps
+
+  const handleViewBookingDetails = (bookingId) => {
+    router.push(`/bookings/${bookingId}`);
+  };
 
   if (!isAuthenticated) {
     return (
@@ -198,7 +203,13 @@ export default function Dashboard() {
                         <p className="text-sm font-medium">{booking.customer?.name || user?.name}</p>
                         <p className="text-sm text-muted-foreground">{booking.customer?.mobile || booking.customer?.email}</p>
                       </div>
-                      <Button variant="outline" size="sm">View Details</Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleViewBookingDetails(booking.id || booking._id)}
+                      >
+                        View Details
+                      </Button>
                     </div>
                     
                     {(booking.id === recentBookingRef || booking._id === recentBookingRef) && (

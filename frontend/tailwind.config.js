@@ -64,6 +64,21 @@ module.exports = {
           900: "#171717",
           950: "#0a0a0a",
         },
+        error: {
+          light: "#fee2e2",
+          DEFAULT: "#ef4444",
+          dark: "#b91c1c",
+        },
+        warning: {
+          light: "#fef3c7",
+          DEFAULT: "#f59e0b",
+          dark: "#92400e",
+        },
+        success: {
+          light: "#dcfce7",
+          DEFAULT: "#22c55e",
+          dark: "#15803d",
+        }
       },
       borderRadius: {
         lg: "var(--radius)",

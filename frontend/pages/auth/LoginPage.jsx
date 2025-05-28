@@ -6,7 +6,11 @@ const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get('redirect') || '/dashboard';
+  
+  const role = searchParams.get('role');
+  const isAdminLogin = role === 'admin';
+  const defaultRedirectTo = isAdminLogin ? '/admin' : '/dashboard';
+  const redirectTo = searchParams.get('redirect') || defaultRedirectTo;
   
   const [form, setForm] = useState({ emailOrPhone: '', password: '' });
   const [error, setError] = useState('');
@@ -20,13 +24,9 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      // Clean up the input - remove spaces, etc. for phone numbers
-      const cleanedEmailOrPhone = form.emailOrPhone.toString().trim();
-      
-      await login(cleanedEmailOrPhone, form.password);
+      await login(form.emailOrPhone, form.password, isAdminLogin); // Pass isAdminLogin flag
       navigate(redirectTo);
     } catch (err) {
-      console.error("Login error details:", err);
       setError(err.message || 'Login failed. Please check your credentials and try again.');
     } finally {
       setLoading(false);
@@ -38,11 +38,8 @@ const LoginPage = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
+            {isAdminLogin ? 'Admin Panel Login' : 'Sign in to your account'}
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Use your email address or phone number
-          </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
@@ -56,7 +53,7 @@ const LoginPage = () => {
                 type="text"
                 required
                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Enter your email or mobile number"
+                placeholder={isAdminLogin ? "Admin email or mobile number" : "Enter your email or mobile number"}
                 value={form.emailOrPhone}
                 onChange={handleChange}
               />
@@ -87,9 +84,9 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 btn-enhanced btn-shine"
             >
-              {loading ? 'Signing In...' : 'Sign In'}
+              {loading ? 'Signing In...' : (isAdminLogin ? 'Admin Sign In' : 'Sign In')}
             </button>
           </div>
         </form>

@@ -18,10 +18,22 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const test = await Test.findById(req.params.id);
-    if (!test) return res.status(404).json({ message: 'Test not found' });
+    if (!test) {
+      console.log(`Test with ID ${req.params.id} not found`);
+      return res.status(404).json({ 
+        message: 'Test not found',
+        details: 'The requested test could not be found in our database'
+      });
+    }
     res.json(test);
   } catch (err) {
     console.error('Error fetching test:', err);
+    if (err.name === 'CastError') {
+      return res.status(400).json({ 
+        message: 'Invalid test ID format',
+        details: 'The provided test ID is not in a valid format'
+      });
+    }
     res.status(500).json({ message: err.message });
   }
 });

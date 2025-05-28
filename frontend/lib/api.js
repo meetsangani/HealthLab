@@ -65,10 +65,23 @@ async function fetchAPI(endpoint, options = {}) {
       if (contentType && contentType.includes('application/json')) {
         const errorData = await response.json();
         console.error('API error response:', errorData);
+        
+        // Add specific handling for 404 errors
+        if (response.status === 404) {
+          const notFoundMessage = errorData.details || errorData.message || 'Resource not found';
+          throw new Error(`Not found: ${notFoundMessage}`);
+        }
+        
         throw new Error(errorData.message || 'An error occurred while fetching data');
       } else {
         const textError = await response.text();
-        console.error('Non-JSON error response:', textError);
+        console.error(`Non-JSON error response (${response.status}):`, textError);
+        
+        // Handle 404 specifically
+        if (response.status === 404) {
+          throw new Error('Resource not found: The requested item does not exist');
+        }
+        
         throw new Error(`Server error (${response.status}): ${textError || 'The API endpoint might not be available'}`);
       }
     }
@@ -129,34 +142,23 @@ export const userAPI = {
   }),
 };
 
-// Tests API
 export const testsAPI = {
   getAllTests: () => fetchAPI('/tests'),
-  
-  getTestById: (id) => fetchAPI(`/tests/${id}`),
-};
 
-// Bookings API
+  getTestById: (id) => fetchAPI(`/tests/${id}`)
+}
+
 export const bookingsAPI = {
   createBooking: (bookingData, token) => fetchAPI('/bookings', {
     method: 'POST',
     body: bookingData,
     token
   }),
-  
-  getUserBookings: (token) => fetchAPI('/bookings', {
+
+  getUserBookings: (token) => fetchAPI('/bookings/user', {
     token
-  }),
-  
-  getBookingById: (id, token) => fetchAPI(`/bookings/${id}`, {
-    token
-  }),
-  
-  cancelBooking: (id, token) => fetchAPI(`/bookings/${id}/cancel`, {
-    method: 'PUT',
-    token
-  }),
-};
+  })
+}
 
 // Reports API
 export const reportsAPI = {

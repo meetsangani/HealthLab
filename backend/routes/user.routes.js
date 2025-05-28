@@ -63,6 +63,42 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
+// Update user by id (admin)
+router.put('/:id', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ message: 'Forbidden' });
+
+    const { name, email, phone, address, dateOfBirth, gender, role } = req.body;
+    
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (email) updateData.email = email; // Add email validation if allowing change
+    if (phone) updateData.phone = phone;
+    if (address) updateData.address = address;
+    if (dateOfBirth) updateData.dateOfBirth = dateOfBirth;
+    if (gender) updateData.gender = gender;
+    if (role && ['customer', 'admin'].includes(role)) updateData.role = role; // Allow role update by admin
+
+    // Prevent password update through this route for security, handle separately if needed
+    if (req.body.password) {
+      return res.status(400).json({ message: 'Password updates are not allowed through this route.' });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.json({ message: 'User profile updated successfully by admin', user });
+  } catch (err) {
+    console.error('Error updating user by admin:', err);
+    res.status(400).json({ message: err.message });
+  }
+});
+
 // Delete user (admin)
 router.delete('/:id', auth, async (req, res) => {
   try {

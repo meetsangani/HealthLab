@@ -12,7 +12,6 @@ frontend/
 │   ├── components/              # Reusable UI components
 │   │   ├── ui/                  # Small, atomic components
 │   │   ├── layout/              # Layout components
-│   │   ├── admin-sidebar.jsx    # Admin sidebar navigation
 │   │   ├── dashboard-sidebar.jsx # Customer dashboard sidebar
 │   │   ├── footer.jsx           # Site footer component
 │   │   └── navbar.jsx           # Main navigation component
@@ -24,7 +23,6 @@ frontend/
 │   │   └── useApi.js            # API interaction hook
 │   ├── layout/                  # Layout wrapper components
 │   │   ├── RootLayout.jsx       # Main layout with navbar/footer
-│   │   ├── AdminLayout.jsx      # Admin dashboard layout
 │   │   └── DashboardLayout.jsx  # Customer dashboard layout
 │   ├── pages/                   # Page components
 │   │   ├── HomePage.jsx         # Home page
@@ -35,7 +33,7 @@ frontend/
 │   │   ├── TestDetailsPage.jsx  # Test details
 │   │   ├── auth/                # Authentication pages
 │   │   ├── dashboard/           # Customer dashboard pages
-│   │   └── admin/               # Admin pages
+│   │   └── customer/            # Customer specific pages
 │   ├── providers/               # Provider components
 │   │   └── theme-provider.jsx   # Theme provider for dark/light mode
 │   └── utils/                   # Utility functions
@@ -55,10 +53,20 @@ frontend/
 - Modern React application with React Router
 - Responsive design for all screen sizes
 - Dark/Light theme mode
-- Patient & Admin dashboards
+- Patient dashboard
 - Test booking system
 - Diagnostic test catalog
 - Patient test reporting
+
+## Customer Features
+
+- User registration and authentication
+- Browse available tests
+- Book diagnostic tests with preferred date/time
+- View booking history and status
+- Download test reports
+- Manage profile information
+- Responsive design for mobile and desktop
 
 ## Getting Started
 

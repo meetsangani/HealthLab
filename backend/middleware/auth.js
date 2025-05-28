@@ -21,6 +21,20 @@ const auth = async (req, res, next) => {
 
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Handle special admin user
+    if (decoded.id === 'special-admin') {
+      req.user = {
+        _id: 'special-admin',
+        id: 'special-admin',
+        name: 'System Admin',
+        email: 'admin@healthlab.com',
+        phone: '0000000000',
+        role: 'admin'
+      };
+      return next();
+    }
+    
     const user = await User.findById(decoded.id).select('-password');
     
     if (!user) {

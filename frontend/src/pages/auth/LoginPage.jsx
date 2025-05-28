@@ -20,8 +20,10 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      await login(form.emailOrPhone, form.password);
-      navigate(redirectTo);
+      const result = await login(form.emailOrPhone, form.password, false);
+      
+      // Regular user login - redirect to dashboard
+      navigate('/dashboard');
     } catch (err) {
       setError(err.message);
     } finally {

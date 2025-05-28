@@ -56,12 +56,11 @@ const Dashboard = () => {
         .then(data => {
           const userBookings = data.filter(b => isUserBooking(b, user));
           setBookings(userBookings);
-          setLoading(false);
         })
         .catch(() => {
           setBookings([]);
-          setLoading(false);
-        });
+        })
+        .finally(() => setLoading(false));
     }
   }, [token, user]);
 
@@ -72,10 +71,14 @@ const Dashboard = () => {
 
   const handleBookTestClick = () => {
     if (isAuthenticated) {
-      navigate('/tests'); // Or your desired route for booking/test catalog
+      navigate('/tests');
     } else {
-      navigate('/login?redirect=/tests'); // Redirect to login, then to tests
+      navigate('/login?redirect=/tests');
     }
+  };
+
+  const handleViewBookingDetails = (bookingId) => {
+    navigate(`/dashboard/bookings/${bookingId}`);
   };
 
   return (
@@ -85,9 +88,11 @@ const Dashboard = () => {
         <div className="flex-1">
           <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-2">Welcome to Your Dashboard</h2>
           <p className="text-gray-700 mb-4">Manage your health tests, view reports, and keep track of your bookings in one place.</p>
-          <BookButton className="px-5 py-2 text-base font-semibold shadow hover:shadow-md transition">
+          <button 
+            onClick={handleBookTestClick}
+            className="btn btn-primary px-5 py-2 text-base font-semibold shadow hover:shadow-md transition">
             Book a Test
-          </BookButton>
+          </button>
         </div>
         <div className="flex-1 flex justify-center">
           <img src="/dashboard-illustration.svg" alt="Dashboard" className="w-48 md:w-64" loading="lazy" />
@@ -148,7 +153,12 @@ const Dashboard = () => {
                       <span className="font-mono">{(booking._id || booking.id)?.slice(-6).toUpperCase()}</span>
                     </div>
                     <div className="flex space-x-2 mt-auto">
-                      <button className="btn btn-primary btn-enhanced btn-shine w-full px-3 py-1 text-sm rounded-full">View Details</button>
+                      <button 
+                        className="btn btn-primary btn-enhanced btn-shine w-full px-3 py-1 text-sm rounded-full"
+                        onClick={() => handleViewBookingDetails(booking._id || booking.id)}
+                      >
+                        View Details
+                      </button>
                       {booking.status === 'completed' && (
                         <button className="btn btn-secondary btn-enhanced btn-shine w-full px-3 py-1 text-sm rounded-full">Download Report</button>
                       )}
@@ -161,9 +171,11 @@ const Dashboard = () => {
             <div className="flex flex-col items-center justify-center py-16">
               <img src="/empty-bookings.svg" alt="No bookings" className="w-40 mb-6" loading="lazy" />
               <p className="text-gray-600 mb-4 text-lg">You don't have any bookings yet.</p>
-              <BookButton className="px-4 py-2 text-base rounded-full">
+              <button 
+                onClick={handleBookTestClick}
+                className="btn btn-primary px-4 py-2 text-base rounded-full">
                 Book a Test
-              </BookButton>
+              </button>
             </div>
           )}
         </>
@@ -172,36 +184,36 @@ const Dashboard = () => {
   );
 };
 
-// Add missing helper functions at the end of the file
 const getStatusColor = (status) => {
-  const colorMap = {
+  const colors = {
     pending: 'bg-yellow-100 text-yellow-800',
     confirmed: 'bg-blue-100 text-blue-800',
-    completed: 'bg-green-100 text-green-800',
-    cancelled: 'bg-red-100 text-red-800',
-    sample_collected: 'bg-indigo-100 text-indigo-800',
-    report_ready: 'bg-purple-100 text-purple-800'
+    sample_collected: 'bg-purple-100 text-purple-800',
+    processing: 'bg-indigo-100 text-indigo-800',
+    report_ready: 'bg-green-100 text-green-800',
+    completed: 'bg-gray-100 text-gray-800',
+    cancelled: 'bg-red-100 text-red-800'
   };
-  return colorMap[status] || 'bg-gray-100 text-gray-800';
+  return colors[status] || 'bg-gray-100 text-gray-800';
 };
 
 const formatStatus = (status) => {
   const statusMap = {
     pending: 'Pending',
     confirmed: 'Confirmed',
-    completed: 'Completed',
-    cancelled: 'Cancelled',
     sample_collected: 'Sample Collected',
-    report_ready: 'Report Ready'
+    processing: 'Processing',
+    report_ready: 'Report Ready',
+    completed: 'Completed',
+    cancelled: 'Cancelled'
   };
   return statusMap[status] || status;
 };
 
-// Add StatCard component
 const StatCard = ({ label, value, color }) => (
-  <div className={`rounded-xl p-4 ${color} text-center`}>
-    <p className="text-2xl font-bold">{value}</p>
-    <p className="text-sm font-medium">{label}</p>
+  <div className={`rounded-lg p-4 ${color}`}>
+    <div className="text-2xl font-bold">{value}</div>
+    <div className="text-sm font-medium">{label}</div>
   </div>
 );
 

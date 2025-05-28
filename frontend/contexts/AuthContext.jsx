@@ -40,7 +40,7 @@ export function AuthProvider({ children }) {
     fetchUserProfile();
   }, [token]);
 
-  const login = async (emailOrPhone, password) => {
+  const login = async (emailOrPhone, password, isAdminLogin = false) => {
     try {
       // Ensure emailOrPhone is a string and properly trimmed
       const cleanedEmailOrPhone = emailOrPhone.toString().trim();
@@ -51,12 +51,17 @@ export function AuthProvider({ children }) {
         method: 'POST',
         body: {
           emailOrPhone: cleanedEmailOrPhone,
-          password
+          password,
+          isAdmin: isAdminLogin // Send a flag to the backend to check for admin role
         },
       });
       
       if (!data.token) {
         throw new Error('No token received from server');
+      }
+      
+      if (isAdminLogin && (!data.user || data.user.role !== 'admin')) {
+        throw new Error('Access denied. Only administrators can login to the admin panel.');
       }
       
       setToken(data.token);
@@ -94,6 +99,7 @@ export function AuthProvider({ children }) {
   };
 
   const isAuthenticated = Boolean(user) && Boolean(token);
+  const isAdmin = user?.role === 'admin';
 
   const value = {
     user, 
@@ -102,6 +108,7 @@ export function AuthProvider({ children }) {
     register, 
     logout, 
     isAuthenticated,
+    isAdmin,
     loading,
     // Helper method to check if a resource belongs to current user
     isOwnResource: (resourceUserId) => {

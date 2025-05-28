@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { testsAPI } from '../utils/api';
 import BookButton from '../components/BookButton';
 
@@ -25,8 +25,12 @@ const TestDetailsPage = () => {
   }, [id]);
 
   if (loading) return <div className="container mx-auto p-4">Loading test details...</div>;
-  if (error) return <div className="container mx-auto p-4 text-red-500">{error}</div>;
-  if (!test) return <div className="container mx-auto p-4">Test not found</div>;
+  if (error) return <div className="container mx-auto p-4 text-red-500">Error loading test: {error}</div>;
+  if (!test) return <div className="container mx-auto p-4 bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+    <h2 className="text-xl font-semibold text-yellow-700 mb-2">Test Not Found</h2>
+    <p className="text-gray-600 mb-4">The test you're looking for doesn't exist or may have been removed.</p>
+    <Link to="/tests" className="text-blue-600 hover:underline">View All Available Tests</Link>
+  </div>;
 
   return (
     <div className="container mx-auto p-4">

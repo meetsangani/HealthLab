@@ -1,3 +1,6 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -5,41 +8,35 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Clock, AlertCircle, FileText, Beaker, ArrowLeft } from "lucide-react"
 import BookingButton from "@/app/components/BookingButton"
+import { testsAPI } from "@/lib/api"
 
 export default function TestDetailPage({ params }) {
-  const testId = Number.parseInt(params.id)
+  const [test, setTest] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  // Mock test data - in a real app, fetch this from a database
-  const test = {
-    id: testId,
-    name: "Complete Blood Count (CBC)",
-    category: "blood",
-    price: 500,
-    turnaround: "24 hours",
-    description:
-      "A Complete Blood Count (CBC) is a blood test used to evaluate your overall health and detect a wide range of disorders, including anemia, infection, and leukemia.",
-    popular: true,
-    preparation:
-      "Fasting is not required for this test. However, certain medications may affect the results, so inform your doctor about any medications you are taking.",
-    procedure:
-      "A healthcare professional will clean the area, usually from a vein in your arm, and insert a small needle to draw a blood sample. The procedure takes only a few minutes and causes minimal discomfort.",
-    sampleType: "Blood",
-    reportIncludes: [
-      "Red Blood Cell (RBC) count",
-      "White Blood Cell (WBC) count",
-      "Platelet count",
-      "Hemoglobin concentration",
-      "Hematocrit percentage",
-      "Mean Corpuscular Volume (MCV)",
-      "Mean Corpuscular Hemoglobin (MCH)",
-      "Mean Corpuscular Hemoglobin Concentration (MCHC)",
-      "Red Cell Distribution Width (RDW)",
-    ],
-    relatedTests: [
-      { id: 2, name: "Lipid Profile" },
-      { id: 3, name: "Liver Function Test" },
-      { id: 9, name: "Vitamin D Test" },
-    ],
+  useEffect(() => {
+    const fetchTest = async () => {
+      try {
+        const data = await testsAPI.getTestById(params.id)
+        setTest(data)
+      } catch (err) {
+        console.error("Error fetching test:", err)
+        setError("Failed to load test details")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTest()
+  }, [params.id])
+
+  if (loading) {
+    return <div className="container py-10">Loading...</div>
+  }
+
+  if (error) {
+    return <div className="container py-10">{error}</div>
   }
 
   if (!test) {

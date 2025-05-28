@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import {
   LayoutDashboard, Calendar, FileText, Users, 
   Settings, LogOut, Menu, ChevronRight,
@@ -9,6 +10,8 @@ import {
 export default function AdminSidebar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout, isAdmin } = useAuth();
 
   const routes = [
     {
@@ -17,23 +20,23 @@ export default function AdminSidebar() {
       icon: LayoutDashboard,
     },
     {
-      href: "/admin/bookings",
-      label: "Bookings",
+      href: "/admin/manage-bookings",
+      label: "Manage Bookings", 
       icon: Calendar,
     },
     {
-      href: "/admin/tests",
-      label: "Test Management",
+      href: "/admin/manage-tests",
+      label: "Manage Tests",
       icon: FlaskConical,
     },
     {
-      href: "/admin/customers",
-      label: "Customers",
+      href: "/admin/manage-customers",
+      label: "Manage Customers",
       icon: Users,
     },
     {
-      href: "/admin/reports",
-      label: "Reports",
+      href: "/admin/manage-reports",
+      label: "Manage Reports",
       icon: FileText,
     },
     {
@@ -48,7 +51,17 @@ export default function AdminSidebar() {
     },
   ];
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) => {
+    if (path === "/admin") {
+      return location.pathname === "/admin";
+    }
+    return location.pathname === path;
+  };
+  
+  const handleLogout = () => {
+    logout();
+    navigate('/admin/login');
+  };
 
   return (
     <>
@@ -107,7 +120,10 @@ export default function AdminSidebar() {
             </nav>
           </div>
           <div className="mt-auto px-2 pb-2 border-t pt-2">
-            <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-muted text-foreground">
+            <button 
+              onClick={handleLogout}
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-muted text-foreground"
+            >
               <LogOut className="h-4 w-4" />
               Logout
             </button>
@@ -140,7 +156,10 @@ export default function AdminSidebar() {
             </nav>
           </div>
           <div className="mt-auto px-2 pb-2 border-t pt-2">
-            <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-muted text-foreground">
+            <button 
+              onClick={handleLogout}
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-muted text-foreground"
+            >
               <LogOut className="h-4 w-4" />
               Logout
             </button>

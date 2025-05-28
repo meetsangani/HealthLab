@@ -21,7 +21,6 @@ export default function Navbar() {
 
   const authenticatedRoutes = [
     { href: "/tests", label: "Tests" },
-    { href: "/bookings", label: "My Bookings" },
   ]
 
   const routes = isAuthenticated ? [...baseRoutes, ...authenticatedRoutes] : baseRoutes

@@ -45,7 +45,18 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // 404 handler for API routes
 app.use('/api/*', (req, res) => {
   console.log(`404 - Endpoint not found: ${req.originalUrl}`);
-  res.status(404).json({ success: false, message: 'API endpoint not found' });
+  res.status(404).json({ 
+    success: false, 
+    message: 'API endpoint not found',
+    details: `The requested endpoint '${req.originalUrl}' does not exist on this server.`,
+    availableEndpoints: {
+      auth: '/api/auth/*',
+      users: '/api/users/*',
+      tests: '/api/tests/*',
+      bookings: '/api/bookings/*',
+      reports: '/api/reports/*'
+    }
+  });
 });
 
 // Connect to MongoDB

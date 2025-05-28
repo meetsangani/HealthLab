@@ -46,17 +46,51 @@ export const bookingsAPI = {
   getUserBookings: (token) => apiFetch('/bookings', {
     token
   }),
+  getAllBookings: (token) => apiFetch('/bookings', {
+    token
+  }),
   getBookingById: (id, token) => apiFetch(`/bookings/${id}`, {
     token
   }),
   cancelBooking: (id, token) => apiFetch(`/bookings/${id}/cancel`, {
     method: 'PUT',
     token
+  }),
+  updateBookingStatus: (id, status, token) => apiFetch(`/bookings/${id}/status`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status }),
+    token
   })
+};
+
+// Reports API
+export const reportsAPI = {
+  getReportByBookingId: async (bookingId, token) => {
+    try {
+      const response = await apiFetch(`/reports/booking/${bookingId}`, { token });
+      return response;
+    } catch (error) {
+      console.error('Error fetching report:', error);
+      throw error;
+    }
+  },
+  
+  downloadReport: async (reportId, token) => {
+    try {
+      // This would typically return a download URL or blob
+      const response = await apiFetch(`/reports/download/${reportId}`, { token });
+      return response.downloadUrl || response;
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      throw error;
+    }
+  }
 };
 
 // Export all API functions
 export default {
   tests: testsAPI,
   bookings: bookingsAPI,
+  reports: reportsAPI,
 };

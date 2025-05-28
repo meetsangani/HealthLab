@@ -199,64 +199,91 @@ router.post('/verify-otp', async (req, res) => {
 // Login
 router.post('/login', async (req, res) => {
   try {
-    const { emailOrPhone, password } = req.body;
+    const { emailOrPhone, password, isAdmin } = req.body;
     
     // Debug log
-    console.log("Login attempt with:", { emailOrPhone, passwordProvided: !!password });
+    console.log("Login attempt with:", { emailOrPhone, passwordProvided: !!password, isAdmin });
     
     if (!emailOrPhone || !password) {
       return res.status(400).json({ message: 'Email/phone and password are required' });
     }
 
-    // Normalize the input by trimming and converting to string
+    // Special admin check - bypass database
     const normalizedInput = emailOrPhone.toString().trim();
+    if (normalizedInput.toLowerCase() === 'admin@healthlab.com' && password === 'Admin@123') {
+      const token = jwt.sign({ 
+        id: 'special-admin', 
+        email: 'admin@healthlab.com',
+        role: 'admin' 
+      }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+      
+      console.log('Special admin login successful');
+      return res.status(200).json({ 
+        token, 
+        user: { 
+          id: 'special-admin',
+          _id: 'special-admin',
+          name: 'System Admin', 
+          email: 'admin@healthlab.com', 
+          phone: '0000000000',
+          role: 'admin' 
+        } 
+      });
+    }
+
+    // Normalize the input by trimming and converting to string
     const isEmail = normalizedInput.includes('@');
     
     // Find user by email or phone with flexible matching for phone numbers
     let user;
     if (isEmail) {
-      // Find by email (case insensitive)
-      user = await User.findOne({ email: new RegExp(`^${normalizedInput}$`, 'i') }).select('+password');
-      console.log("Looking up by email:", normalizedInput);
+      const emailQuery = { email: new RegExp(`^${normalizedInput}$`, 'i') };
+      console.log(`Attempting to find user by email. Query: ${JSON.stringify(emailQuery)}`);
+      user = await User.findOne(emailQuery).select('+password');
     } else {
       // For phone number lookup, strip all non-digit characters
-      const phoneQuery = normalizedInput.replace(/\D/g, '');
-      const lastTenDigits = phoneQuery.slice(-10); // Get last 10 digits for India numbers
+      const phoneQueryValue = normalizedInput.replace(/\D/g, '');
+      const lastTenDigits = phoneQueryValue.slice(-10); // Get last 10 digits for India numbers
       
-      console.log("Looking up by phone:", { 
-        original: normalizedInput,
-        normalized: phoneQuery,
-        lastTenDigits 
-      });
-      
-      // Try multiple phone formats to increase chances of finding the user
-      user = await User.findOne({
+      const phoneDbQuery = {
         $or: [
-          { phone: phoneQuery },
-          { phone: new RegExp(`${phoneQuery}$`) },
+          { phone: phoneQueryValue },
+          { phone: new RegExp(`${phoneQueryValue}$`) },
           { phone: lastTenDigits },
           { phone: new RegExp(`${lastTenDigits}$`) },
           // Also try with common prefixes for Indian numbers
           { phone: `+91${lastTenDigits}` },
           { phone: `91${lastTenDigits}` }
         ]
-      }).select('+password');
+      };
+      console.log(`Attempting to find user by phone. Input: '${normalizedInput}', Normalized Phone Query Value: '${phoneQueryValue}', Last Ten Digits: '${lastTenDigits}'. DB Query: ${JSON.stringify(phoneDbQuery)}`);
+      user = await User.findOne(phoneDbQuery).select('+password');
     }
     
     if (!user) {
-      console.log("User not found for:", emailOrPhone);
+      console.log(`Login attempt failed: User not found for input '${emailOrPhone}' (processed as '${normalizedInput}').`);
       return res.status(400).json({ message: 'Invalid credentials' });
     }
+    
+    // Check if admin login is required and user is not admin
+    if (isAdmin && user.role !== 'admin') {
+      console.log(`Admin login attempt failed: User ${user.email} (ID: ${user._id}) is not an admin.`);
+      return res.status(403).json({ message: 'Access denied. Only administrators can access the admin panel.' });
+    }
+    
+    // User found, log details before checking password
+    console.log(`Login attempt: User found. ID: ${user._id}, Email: ${user.email}, Phone: ${user.phone}, Role: ${user.role}. Now verifying password.`);
     
     // Verify password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      console.log("Password mismatch for user:", user.email);
+      console.log(`Login attempt failed: Password mismatch for user ${user.email} (ID: ${user._id}).`);
       return res.status(400).json({ message: 'Invalid credentials' });
     }
       
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
     
+    console.log(`Login successful for user ${user.email} (ID: ${user._id}).`);
     // Ensure we're sending a proper JSON response
     return res.status(200).json({ 
       token, 

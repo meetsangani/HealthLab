@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
@@ -6,8 +8,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
 import { Search } from "lucide-react"
 import BookingButton from "@/app/components/BookingButton"
+import { useState, useEffect } from "react"
+import { testsAPI } from "@/lib/api"
 
 export default function TestsPage() {
+  const [tests, setTests] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  // Fetch real tests from API instead of using mock data
+  useEffect(() => {
+    const fetchTests = async () => {
+      try {
+        const data = await testsAPI.getAllTests()
+        setTests(data)
+      } catch (err) {
+        console.error("Error fetching tests:", err)
+        setError("Failed to load tests")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTests()
+  }, [])
+
   // Mock test categories
   const categories = [
     { id: "all", name: "All Tests" },
@@ -19,90 +44,13 @@ export default function TestsPage() {
     { id: "allergy", name: "Allergy Tests" },
   ]
 
-  // Mock tests data
-  const tests = [
-    {
-      id: 1,
-      name: "Complete Blood Count (CBC)",
-      category: "blood",
-      price: 500,
-      turnaround: "24 hours",
-      description: "Measures red and white blood cells, platelets, hemoglobin, and hematocrit.",
-      popular: true,
-    },
-    {
-      id: 2,
-      name: "Lipid Profile",
-      category: "blood",
-      price: 800,
-      turnaround: "24 hours",
-      description: "Measures cholesterol levels including HDL, LDL, and triglycerides.",
-      popular: true,
-    },
-    {
-      id: 3,
-      name: "Liver Function Test",
-      category: "blood",
-      price: 1200,
-      turnaround: "24 hours",
-      description: "Assesses liver function by measuring enzymes, proteins, and bilirubin.",
-      popular: false,
-    },
-    {
-      id: 4,
-      name: "Thyroid Profile",
-      category: "hormonal",
-      price: 1500,
-      turnaround: "48 hours",
-      description: "Measures thyroid hormones (T3, T4) and thyroid-stimulating hormone (TSH).",
-      popular: true,
-    },
-    {
-      id: 5,
-      name: "Urinalysis",
-      category: "urine",
-      price: 400,
-      turnaround: "24 hours",
-      description: "Analyzes physical, chemical, and microscopic properties of urine.",
-      popular: false,
-    },
-    {
-      id: 6,
-      name: "Comprehensive Health Checkup",
-      category: "full-body",
-      price: 5000,
-      turnaround: "72 hours",
-      description: "Complete health assessment including blood, urine tests, and vital measurements.",
-      popular: true,
-    },
-    {
-      id: 7,
-      name: "COVID-19 RT-PCR Test",
-      category: "covid",
-      price: 1800,
-      turnaround: "24 hours",
-      description: "Gold standard test for detecting active COVID-19 infection.",
-      popular: true,
-    },
-    {
-      id: 8,
-      name: "Food Allergy Panel",
-      category: "allergy",
-      price: 3500,
-      turnaround: "72 hours",
-      description: "Tests for allergic reactions to common food allergens.",
-      popular: false,
-    },
-    {
-      id: 9,
-      name: "Vitamin D Test",
-      category: "blood",
-      price: 1200,
-      turnaround: "48 hours",
-      description: "Measures the level of vitamin D in your blood.",
-      popular: false,
-    },
-  ]
+  if (loading) {
+    return <div>Loading tests...</div>
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>
+  }
 
   return (
     <div className="container py-10">
