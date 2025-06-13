@@ -41,27 +41,52 @@ export default function Dashboard() {
   // Fetch user bookings and reports
   useEffect(() => {
     async function fetchUserData() {
-      if (!isAuthenticated || !user) return;
+      if (!isAuthenticated || !user || !token) {
+        console.log('Missing authentication data:', { isAuthenticated, hasUser: !!user, hasToken: !!token });
+        return;
+      }
 
       try {
         setLoadingBookings(true);
+        setError(null); // Reset error state
 
         try {
-          const bookingsData = await bookingsAPI.getUserBookings(token); // pass token here
-          if (bookingsData && bookingsData.length > 0) {
+          console.log('Fetching bookings for user:', user.email || user.name);
+          const bookingsData = await bookingsAPI.getUserBookings(token);
+          
+          if (bookingsData && Array.isArray(bookingsData) && bookingsData.length > 0) {
             // Filter by user just to be sure
             const userBookings = bookingsData.filter(b => isUserBooking(b, user));
+            console.log('Found user bookings:', userBookings.length);
             setBookings(userBookings);
           } else {
+            console.log('No bookings found for user');
             setBookings([]);
           }
         } catch (apiError) {
           console.error("Error fetching bookings from API:", apiError);
-          setBookings([]);
+          
+          // Handle specific error types
+          if (apiError.message.includes('Authentication required')) {
+            setError("Please log in again to view your bookings");
+          } else if (apiError.message.includes('Access denied')) {
+            setError("You don't have permission to view these bookings");
+          } else if (apiError.message.includes('Not found')) {
+            // This is expected if user has no bookings yet
+            console.log('No bookings endpoint found or no bookings for user');
+            setBookings([]);
+          } else {
+            setError(`Failed to load bookings: ${apiError.message}`);
+          }
+          
+          // Set empty bookings on error (except for auth errors)
+          if (!apiError.message.includes('Authentication') && !apiError.message.includes('Access denied')) {
+            setBookings([]);
+          }
         }
       } catch (err) {
-        console.error("Error fetching bookings:", err);
-        setError("Failed to load bookings");
+        console.error("Unexpected error fetching bookings:", err);
+        setError("An unexpected error occurred while loading your bookings");
         setBookings([]);
       } finally {
         setLoadingBookings(false);
@@ -69,7 +94,7 @@ export default function Dashboard() {
     }
 
     fetchUserData();
-  }, [isAuthenticated, user, token]); // add token to deps
+  }, [isAuthenticated, user, token]);
 
   const handleViewBookingDetails = (bookingId) => {
     router.push(`/bookings/${bookingId}`);
@@ -119,7 +144,26 @@ export default function Dashboard() {
           </BookingButton>
         </div>
 
-        {bookings.length === 0 ? (
+        {error && (
+          <Card className="mb-6">
+            <CardContent className="p-6">
+              <div className="text-center text-red-600">
+                <p className="font-medium">Error loading bookings</p>
+                <p className="text-sm mt-1">{error}</p>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="mt-3"
+                  onClick={() => window.location.reload()}
+                >
+                  Retry
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {bookings.length === 0 && !error ? (
           <Card>
             <CardContent className="p-6 text-center">
               <div className="mb-3">

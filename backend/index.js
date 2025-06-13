@@ -11,6 +11,7 @@ const userRoutes = require('./routes/user.routes');
 const testRoutes = require('./routes/test.routes');
 const bookingRoutes = require('./routes/booking.routes');
 const reportRoutes = require('./routes/report.routes');
+const adminRoutes = require('./routes/admin.routes');
 
 // Initialize Express app
 const app = express();
@@ -38,6 +39,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/tests', testRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

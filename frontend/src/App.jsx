@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
 
 // Layouts
 import RootLayout from './layout/RootLayout';
@@ -17,6 +16,7 @@ import BookingPage from './pages/BookingPage';
 // Auth Pages
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
+import AdminLoginPage from './pages/auth/LoginPage'; // <-- Use the correct path for admin login
 
 // Customer Pages
 import DashboardPage from './pages/dashboard/DashboardPage';
@@ -25,6 +25,9 @@ import BookingsPage from './pages/dashboard/BookingsPage';
 import ReportsPage from './pages/dashboard/ReportsPage';
 import BookingDetails from './pages/customer/BookingDetails';
 import BookingDetailPage from './pages/dashboard/BookingDetailPage';
+
+// Admin Pages
+import ManageTests from './pages/admin/ManageTests';
 
 function App() {
   return (
@@ -56,6 +59,10 @@ function App() {
 
         {/* Customer Booking Details Route */}
         <Route path="/customer/bookings/:bookingId" element={<BookingDetails />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLoginPage />} />
+        <Route path="/admin/tests" element={<ManageTests />} />
       </Routes>
     </Router>
   );

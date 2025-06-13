@@ -52,7 +52,7 @@ const Dashboard = () => {
         return;
       }
       
-      apiFetch(`/bookings?userId=${user._id}`, { token })
+      apiFetch(`/bookings/user`, { token })
         .then(data => {
           const userBookings = data.filter(b => isUserBooking(b, user));
           setBookings(userBookings);

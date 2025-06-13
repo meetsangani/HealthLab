@@ -9,30 +9,21 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-      
-      try {
-        const userData = await apiFetch('/auth/profile', { token });
-        setUser(userData);
-      } catch (err) {
-        console.error('Failed to fetch user profile', err);
-        // Clear invalid token
-        setUser(null);
-        setToken(null);
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('token');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
+    // Initialize token and user from localStorage
+    const storedToken = localStorage.getItem('authToken');
+    const storedUser = localStorage.getItem('authUser');
     
-    fetchUserProfile();
-  }, [token]);
+    if (storedToken && storedUser) {
+      try {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('authUser');
+      }
+    }
+    setLoading(false);
+  }, []);
 
   // Login function with admin support
   const login = async (emailOrPhone, password, isAdminLogin = false) => {
@@ -61,7 +52,7 @@ export function AuthProvider({ children }) {
         throw new Error('Access denied. Only administrators can access the admin panel.');
       }
       
-      // Store token and user in localStorage
+      // Store token and user in localStorage - use consistent key names
       localStorage.setItem('authToken', response.token);
       localStorage.setItem('authUser', JSON.stringify(response.user));
       
@@ -92,9 +83,10 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setUser(null);
     setToken(null);
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('token');
-    }
+    // Clear both possible token keys for consistency
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('authUser');
   };
 
   const isAuthenticated = Boolean(user) && Boolean(token);

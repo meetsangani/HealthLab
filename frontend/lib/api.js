@@ -64,25 +64,61 @@ async function fetchAPI(endpoint, options = {}) {
     if (!response.ok) {
       if (contentType && contentType.includes('application/json')) {
         const errorData = await response.json();
-        console.error('API error response:', errorData);
+        
+        // Better error logging with more context
+        console.error('API error response:', {
+          status: response.status,
+          statusText: response.statusText,
+          url: response.url,
+          errorData
+        });
+        
+        // Handle empty error response objects
+        const errorMessage = errorData?.message || errorData?.error || errorData?.details;
         
         // Add specific handling for 404 errors
         if (response.status === 404) {
-          const notFoundMessage = errorData.details || errorData.message || 'Resource not found';
+          const notFoundMessage = errorMessage || 'Resource not found';
           throw new Error(`Not found: ${notFoundMessage}`);
         }
         
-        throw new Error(errorData.message || 'An error occurred while fetching data');
+        // Handle 401/403 errors
+        if (response.status === 401) {
+          throw new Error('Authentication required. Please log in again.');
+        }
+        
+        if (response.status === 403) {
+          throw new Error('Access denied. You do not have permission to access this resource.');
+        }
+        
+        // Handle other errors with better fallback messages
+        const finalErrorMessage = errorMessage || `Server returned ${response.status} error`;
+        throw new Error(finalErrorMessage);
       } else {
         const textError = await response.text();
-        console.error(`Non-JSON error response (${response.status}):`, textError);
+        console.error(`Non-JSON error response (${response.status}):`, {
+          status: response.status,
+          statusText: response.statusText,
+          url: response.url,
+          textError
+        });
         
         // Handle 404 specifically
         if (response.status === 404) {
           throw new Error('Resource not found: The requested item does not exist');
         }
         
-        throw new Error(`Server error (${response.status}): ${textError || 'The API endpoint might not be available'}`);
+        // Handle 401/403 for non-JSON responses
+        if (response.status === 401) {
+          throw new Error('Authentication required. Please log in again.');
+        }
+        
+        if (response.status === 403) {
+          throw new Error('Access denied. You do not have permission to access this resource.');
+        }
+        
+        const errorMessage = textError || 'The API endpoint might not be available';
+        throw new Error(`Server error (${response.status}): ${errorMessage}`);
       }
     }
     
@@ -149,15 +185,25 @@ export const testsAPI = {
 }
 
 export const bookingsAPI = {
-  createBooking: (bookingData, token) => fetchAPI('/bookings', {
-    method: 'POST',
-    body: bookingData,
-    token
-  }),
+  createBooking: (bookingData, token) => {
+    if (!token) {
+      throw new Error('Authentication token is required for creating bookings');
+    }
+    return fetchAPI('/bookings', {
+      method: 'POST',
+      body: bookingData,
+      token
+    });
+  },
 
-  getUserBookings: (token) => fetchAPI('/bookings/user', {
-    token
-  })
+  getUserBookings: (token) => {
+    if (!token) {
+      throw new Error('Authentication token is required for fetching user bookings');
+    }
+    return fetchAPI('/bookings/user', {
+      token
+    });
+  }
 }
 
 // Reports API

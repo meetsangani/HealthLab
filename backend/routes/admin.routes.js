@@ -23,20 +23,29 @@ router.get('/stats', async (req, res) => {
     const totalBookings = await Booking.countDocuments();
     const totalTests = await Test.countDocuments();
     const totalCustomers = await User.countDocuments({ role: 'customer' });
-    // More stats can be added here, e.g., pending bookings, revenue, etc.
-    // Example: recent bookings
-    const recentBookings = await Booking.find().sort({ createdAt: -1 }).limit(5).populate('customer', 'name').populate('test', 'name');
+    const pendingReports = await Booking.countDocuments({ status: { $in: ['pending', 'sample_collected', 'processing'] } });
+    
+    // Get recent bookings with proper error handling
+    const recentBookings = await Booking.find()
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .populate('customer', 'name email')
+      .populate('test', 'name price')
+      .lean();
 
     res.json({
       totalBookings,
       totalTests,
       totalCustomers,
-      recentBookingsSummary: recentBookings.map(b => ({
+      pendingReports,
+      recentBookings: recentBookings.map(b => ({
         id: b._id,
         customerName: b.customer ? b.customer.name : 'N/A',
-        testName: b.test ? b.test.name : b.testName || 'N/A', // Fallback to testName if populated test is not available
+        customerEmail: b.customer ? b.customer.email : 'N/A',
+        testName: b.test ? b.test.name : (b.testName || 'N/A'),
         date: b.date,
-        status: b.status
+        status: b.status,
+        createdAt: b.createdAt
       }))
     });
   } catch (error) {

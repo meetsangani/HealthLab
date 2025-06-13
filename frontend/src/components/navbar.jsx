@@ -6,7 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, isAdmin } = useAuth();
 
   // Include About and Contact in navigation links
   const navigationLinks = [
@@ -54,6 +54,14 @@ export default function Navbar() {
                 >
                   Dashboard
                 </Link>
+                {isAdmin && (
+                  <Link
+                    to="/admin/dashboard"
+                    className="px-4 py-2 text-sm rounded-md text-white bg-purple-600 hover:bg-purple-700"
+                  >
+                    Admin Panel
+                  </Link>
+                )}
                 <button
                   onClick={logout}
                   className="px-4 py-2 text-sm rounded-md border border-gray-300 hover:bg-gray-50"
@@ -126,6 +134,15 @@ export default function Navbar() {
                 >
                   Dashboard
                 </Link>
+                {isAdmin && (
+                  <Link
+                    to="/admin/dashboard"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-white bg-purple-600 hover:bg-purple-700"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Admin Panel
+                  </Link>
+                )}
                 <button
                   onClick={() => {
                     logout();

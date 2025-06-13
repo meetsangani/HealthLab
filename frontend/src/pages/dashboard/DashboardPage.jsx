@@ -12,7 +12,8 @@ const DashboardPage = () => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const data = await bookingsAPI.getAllBookings(token);
+        // Use getUserBookings instead of getAllBookings for customers
+        const data = await bookingsAPI.getUserBookings(token);
         setBookings(data);
       } catch (err) {
         setError('Failed to load bookings. Please try again later.');

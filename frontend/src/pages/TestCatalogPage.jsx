@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import BookButton from '../components/BookButton';
 
 const TestCatalogPage = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, token } = useAuth();
   const navigate = useNavigate();
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +15,7 @@ const TestCatalogPage = () => {
   useEffect(() => {
     const fetchTests = async () => {
       try {
-        const data = await testsAPI.getAllTests();
+        const data = await testsAPI.getAllTests(token);
         setTests(data);
       } catch (err) {
         console.error("Error fetching tests:", err);
@@ -26,12 +26,12 @@ const TestCatalogPage = () => {
     };
 
     fetchTests();
-  }, []);
+  }, [token]);
 
   // Filter tests based on search term
   const filteredTests = tests.filter(test => 
-    test.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (test.description && test.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    (test.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (test.description?.toLowerCase() || '').includes(searchTerm.toLowerCase())
   );
 
   const handleBookTest = (testId) => {

@@ -91,3 +91,6 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+// This file already supports both user and admin login via ?role=admin in the URL.
+// No changes needed here.

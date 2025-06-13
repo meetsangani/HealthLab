@@ -20,23 +20,23 @@ export default function AdminSidebar() {
       icon: LayoutDashboard,
     },
     {
-      href: "/admin/bookings",
-      label: "Bookings",
+      href: "/admin/manage-bookings",
+      label: "Manage Bookings", 
       icon: Calendar,
     },
     {
-      href: "/admin/tests",
-      label: "Test Management",
+      href: "/admin/manage-tests",
+      label: "Manage Tests",
       icon: FlaskConical,
     },
     {
-      href: "/admin/customers",
-      label: "Customers",
+      href: "/admin/manage-customers",
+      label: "Manage Customers",
       icon: Users,
     },
     {
-      href: "/admin/reports",
-      label: "Reports",
+      href: "/admin/manage-reports",
+      label: "Manage Reports",
       icon: FileText,
     },
     {
@@ -51,7 +51,12 @@ export default function AdminSidebar() {
     },
   ];
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) => {
+    if (path === "/admin") {
+      return location.pathname === "/admin";
+    }
+    return location.pathname === path;
+  };
   
   const handleLogout = () => {
     logout();

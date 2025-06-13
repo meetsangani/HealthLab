@@ -52,7 +52,7 @@ const Bookings = () => {
           return;
         }
 
-        const data = await apiFetch(`/bookings?userId=${user._id}`, { token });
+        const data = await apiFetch(`/bookings/user`, { token });
         const userBookings = data.filter(b => isUserBooking(b, user));
         setBookings(userBookings);
       } catch (err) {

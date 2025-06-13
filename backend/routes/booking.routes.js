@@ -39,6 +39,11 @@ router.get('/', auth, async (req, res) => {
 // Get user's own bookings - specific endpoint
 router.get('/user', auth, async (req, res) => {
   try {
+    // Special admin user has no bookings, return empty array
+    if (req.user._id === 'special-admin') {
+      return res.json([]);
+    }
+    
     // Customer can only see their own bookings
     const query = { customer: req.user._id };
     const bookings = await Booking.find(query).populate('test report');
@@ -97,6 +102,11 @@ router.get('/:id', auth, async (req, res) => {
         message: 'Booking not found',
         details: 'The requested booking could not be found in our database'
       });
+    }
+    
+    // Special admin can access all bookings
+    if (req.user._id === 'special-admin') {
+      return res.json(booking);
     }
     
     // Check if the booking belongs to the logged in user or user is admin

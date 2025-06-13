@@ -36,10 +36,7 @@ const ContactPage = () => {
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
-    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
-    else if (!/^\d{10}$/.test(formData.phone.replace(/\D/g, ''))) 
-      newErrors.phone = 'Enter valid 10-digit number';
-    
+    if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
     if (!formData.subject.trim()) newErrors.subject = 'Subject is required';
     if (!formData.message.trim()) newErrors.message = 'Message is required';
     
@@ -54,24 +51,27 @@ const ContactPage = () => {
     
     setSubmitting(true);
     
-    // Simulate API call
+    // Simulate form submission
     setTimeout(() => {
-      setSubmitting(false);
       setSubmitted(true);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: ''
-      });
-      
-      // Reset the success message after 5 seconds
-      setTimeout(() => {
-        setSubmitted(false);
-      }, 5000);
-    }, 1500);
+      setSubmitting(false);
+    }, 1000);
   };
+
+  if (submitted) {
+    return (
+      <div className="container mx-auto px-4 py-12 text-center">
+        <h2 className="text-2xl font-bold mb-4">Thank You!</h2>
+        <p className="text-gray-600 mb-4">Your message has been sent successfully.</p>
+        <button 
+          onClick={() => setSubmitted(false)}
+          className="bg-primary text-white px-4 py-2 rounded-lg"
+        >
+          Send Another Message
+        </button>
+      </div>
+    );
+  }
 
   const contactDetails = [
     {
